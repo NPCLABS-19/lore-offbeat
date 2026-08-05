@@ -1516,27 +1516,13 @@ svg {
   height: auto;
 }
 
-/* Curated client media */
-.media-grid {
-  display: grid;
-  gap: clamp(18px, 2vw, 32px);
-  align-items: start;
-}
-
-.media-grid-landscape,
-.motion-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.social-media-grid,
-.logo-export-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
+/* Curated client media
+   Visible media is a small editorial selection per chapter; the full source
+   library lives in the archive section. Layout leans on the 61.8 / 38.2
+   proportion and whitespace instead of uniform gallery grids. */
 .media-card {
   min-width: 0;
   overflow: hidden;
-  background: var(--cream);
   color: var(--ink);
 }
 
@@ -1545,7 +1531,7 @@ svg {
   display: block;
   width: 100%;
   background: var(--paper);
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .media-landscape > img {
@@ -1561,20 +1547,39 @@ svg {
   aspect-ratio: 1;
 }
 
+.media-natural > img {
+  aspect-ratio: auto;
+  height: auto;
+  background: transparent;
+  object-fit: contain;
+}
+
 .motion-card video {
   background: #3d001f;
 }
 
 .media-card-meta {
   display: flex;
-  min-height: 58px;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 20px;
-  padding: 14px 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.18);
+  padding: 12px 0 0;
+  margin-top: 2px;
+  border-top: 1px solid rgba(0, 0, 0, 0.22);
   font-size: 12px;
   font-weight: 500;
+}
+
+.media-card-title {
+  display: grid;
+  gap: 3px;
+}
+
+.media-card-title small {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.62;
 }
 
 .media-card-meta a {
@@ -1592,15 +1597,251 @@ svg {
   stroke: currentColor;
 }
 
-.logo-export-grid .media-card > img {
-  padding: 9%;
-  aspect-ratio: 1.35;
+.ink-section .media-card {
+  color: var(--white);
+}
+
+.ink-section .media-card-meta {
+  border-top-color: rgba(255, 255, 255, 0.32);
+}
+
+/* Logo · explorations */
+.exploration-layout {
+  display: grid;
+  grid-template-columns: 61.8fr 38.2fr;
+  gap: clamp(32px, 4.5vw, 72px);
+  align-items: end;
+}
+
+.exploration-side {
+  display: grid;
+  gap: clamp(36px, 4.5vw, 72px);
+  align-content: end;
+}
+
+.exploration-figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.exploration-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.exploration-lead img {
   background: var(--white);
 }
 
-.photography-media-grid {
-  max-width: 1240px;
-  margin-inline: auto;
+.exploration-figure figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.22);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.exploration-figure figcaption div {
+  display: grid;
+  gap: 3px;
+}
+
+.exploration-figure figcaption small {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.62;
+}
+
+.exploration-figure figcaption a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+}
+
+.exploration-figure figcaption svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+}
+
+/* Logo · motion */
+.motion-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 3.5vw, 56px);
+}
+
+.motion-row .media-landscape {
+  grid-column: 1 / -1;
+  max-width: 61.8%;
+}
+
+/* Photography · principles */
+.photo-principles {
+  display: grid;
+  gap: clamp(72px, 9vw, 140px);
+  margin-top: clamp(24px, 3vw, 48px);
+}
+
+.photo-principle {
+  display: grid;
+  grid-template-columns: 61.8fr 38.2fr;
+  gap: clamp(36px, 6vw, 96px);
+  align-items: start;
+}
+
+.photo-principle-text {
+  max-width: 560px;
+}
+
+.photo-principle-text span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.photo-principle-text h3 {
+  margin: 18px 0 0;
+  font-size: clamp(30px, 3.4vw, 52px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+.photo-principle-text p {
+  max-width: 42ch;
+  margin: 22px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Application · merchandise collage */
+.application-collage {
+  display: grid;
+  grid-template-columns: 61.8fr 38.2fr;
+  gap: clamp(32px, 4.5vw, 80px);
+  align-items: start;
+}
+
+.application-column {
+  display: grid;
+  gap: clamp(48px, 6vw, 104px);
+}
+
+.application-column-offset {
+  margin-top: clamp(72px, 11vw, 180px);
+}
+
+/* Application · social rail */
+.social-rail {
+  display: flex;
+  gap: clamp(20px, 2.5vw, 36px);
+  overflow-x: auto;
+  padding-bottom: 20px;
+  scroll-snap-type: x proximity;
+}
+
+.social-rail .media-card {
+  flex: 0 0 min(320px, 74vw);
+  scroll-snap-align: start;
+}
+
+.social-rail::-webkit-scrollbar {
+  height: 5px;
+}
+
+.social-rail::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Archive · download library */
+.archive-section {
+  padding: clamp(80px, 10vw, 140px) var(--gutter);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.archive-heading {
+  max-width: 640px;
+}
+
+.archive-heading h2 {
+  margin: 0;
+  font-size: clamp(44px, 5.4vw, 84px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+
+.archive-heading > p:not(.eyebrow) {
+  margin: 20px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.archive-group {
+  display: grid;
+  grid-template-columns: 38.2fr 61.8fr;
+  gap: clamp(24px, 4vw, 72px);
+  margin-top: clamp(48px, 6vw, 84px);
+  padding-top: clamp(24px, 3vw, 40px);
+  border-top: 1px solid var(--ink);
+}
+
+.archive-group-head h3 {
+  margin: 0;
+  font-size: clamp(22px, 2.2vw, 32px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.archive-group-head p {
+  max-width: 36ch;
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  opacity: 0.72;
+}
+
+.archive-list a {
+  display: grid;
+  grid-template-columns: 1fr auto auto 16px;
+  align-items: center;
+  gap: clamp(16px, 2vw, 32px);
+  min-height: 54px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.22);
+  font-size: 13px;
+  transition: opacity 0.15s ease;
+}
+
+.archive-list a:hover,
+.archive-list a:focus-visible {
+  opacity: 0.55;
+}
+
+.archive-list strong {
+  font-weight: 500;
+}
+
+.archive-list span {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.65;
+}
+
+.archive-list svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
 }
 
 .system-principles {
@@ -2624,18 +2865,29 @@ body {
     margin-top: 36px;
   }
 
-  .social-media-grid,
-  .logo-export-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .exploration-layout,
+  .photo-principle,
+  .application-collage,
+  .archive-group {
+    grid-template-columns: 1fr;
+  }
+
+  .application-column-offset {
+    margin-top: 0;
+  }
+
+  .motion-row .media-landscape {
+    max-width: 100%;
   }
 }
 
 @media (max-width: 620px) {
-  .media-grid-landscape,
-  .motion-grid,
-  .social-media-grid,
-  .logo-export-grid {
+  .motion-row {
     grid-template-columns: 1fr;
+  }
+
+  .social-rail .media-card {
+    flex-basis: min(280px, 82vw);
   }
 }
 

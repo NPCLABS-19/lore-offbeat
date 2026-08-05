@@ -22,6 +22,30 @@ export type MediaItem = {
   format: "JPG" | "PNG" | "GIF" | "MP4";
   orientation: "landscape" | "portrait" | "square";
   alt: string;
+  note?: string;
+  /** Real pixel dimensions; when set, the card keeps the file's natural aspect. */
+  width?: number;
+  height?: number;
+};
+
+export type PhotoPrinciple = {
+  number: string;
+  title: string;
+  note: string;
+  item: MediaItem;
+};
+
+export type ArchiveEntry = {
+  name: string;
+  src: string;
+  format: string;
+  dimensions: string;
+};
+
+export type ArchiveGroup = {
+  title: string;
+  note: string;
+  entries: ArchiveEntry[];
 };
 
 /**
@@ -85,7 +109,7 @@ export const offbeat = {
     backgrounds: {
       cover: "paper",
       directories: "ink",
-      content: "white",
+      content: "cream",
       tools: "ink",
     },
   },
@@ -97,16 +121,14 @@ export const offbeat = {
       summary:
         "The primary identifier of the OFF/BEAT brand.",
       sections: [
-        "Introduction",
+        "Primary identifier",
         "Construction",
-        "On color",
-        "Scaling",
+        "Contrast and color",
         "Clearspace",
-        "Supporting logo",
-        "Logo use",
-        "Don’ts",
+        "Approved files",
         "Explorations",
         "Motion",
+        "Keep the beat",
       ],
       status: "ready",
     },
@@ -152,7 +174,7 @@ export const offbeat = {
       title: "Photography",
       summary:
         "Image treatments built from strong crops, familiar references, and graphic intervention.",
-      sections: ["Image direction", "Composition", "Treatment", "Reference library"],
+      sections: ["Image direction", "Recognisable references", "One graphic intervention", "Controlled grain"],
       status: "ready",
     },
     {
@@ -169,8 +191,8 @@ export const offbeat = {
       slug: "application",
       title: "Application",
       summary:
-        "Approved environmental, merchandise, editorial, and social applications.",
-      sections: ["Environmental", "Merchandise", "Editorial", "Social media", "Motion"],
+        "Approved merchandise, object, and social applications.",
+      sections: ["Merchandise and objects", "Social formats"],
       status: "ready",
     },
   ] satisfies Chapter[],
@@ -329,62 +351,98 @@ export const offbeat = {
       surface: "dark",
     },
   ] satisfies AssetItem[],
+  /**
+   * Media model
+   * -----------
+   * `showcase` holds the only media rendered on the page — a small, curated
+   * selection per chapter. `archive` holds the remaining original source
+   * files as download-only entries. Deck-derived page extractions are an
+   * internal reference archive: they must never appear in either collection
+   * (enforced by tests/rendered-html.test.mjs).
+   */
   media: {
-    logoExplorations: [
-      { name: "Construction study", src: "/offbeat/media/round-one/logo-construction.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT wordmark construction study" },
-      { name: "Wordmark variants", src: "/offbeat/media/round-one/logo-wordmark-variants.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT wordmark variant explorations" },
-      { name: "Knockout variants", src: "/offbeat/media/round-one/logo-knockout-variants.jpg", format: "JPG", orientation: "landscape", alt: "Knockout OFF/BEAT logo variants on black" },
-      { name: "Color fields", src: "/offbeat/media/round-one/logo-color-fields.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT logo across approved color fields" },
-      { name: "Slash exploration", src: "/offbeat/media/round-one/logo-slash-exploration.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT slash insignia exploration" },
-      { name: "Slash icon", src: "/offbeat/media/round-one/logo-slash-icon.jpg", format: "JPG", orientation: "landscape", alt: "Pixel slash icon variants" },
-      { name: "Color matrix", src: "/offbeat/media/round-one/logo-color-matrix.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT color and wordmark matrix" },
-      { name: "Type exploration", src: "/offbeat/media/round-one/type-exploration.jpg", format: "JPG", orientation: "landscape", alt: "Round one OFF/BEAT type exploration" },
-    ] satisfies MediaItem[],
-    motion: [
-      { name: "Slash pulse", src: "/offbeat/media/motion/logo-slash.mp4", format: "MP4", orientation: "square", alt: "Animated OFF/BEAT slash pulse" },
-      { name: "Slash loop", src: "/offbeat/media/motion/logo-slash-loop.mp4", format: "MP4", orientation: "square", alt: "Looping OFF/BEAT slash animation" },
-      { name: "Wordmark reveal", src: "/offbeat/media/motion/logo-wordmark-reveal.mp4", format: "MP4", orientation: "square", alt: "Animated OFF/BEAT wordmark reveal" },
-      { name: "Bracket build", src: "/offbeat/media/motion/logo-brackets.mp4", format: "MP4", orientation: "square", alt: "Animated OFF/BEAT bracket construction" },
-      { name: "Email signature", src: "/offbeat/media/motion/email-signature.gif", format: "GIF", orientation: "landscape", alt: "Pink OFF/BEAT animated email signature" },
-      { name: "Logo animation", src: "/offbeat/media/motion/logo-animation.gif", format: "GIF", orientation: "square", alt: "Looping OFF/BEAT logo animation" },
-    ] satisfies MediaItem[],
-    applications: [
-      { name: "Storefront system", src: "/offbeat/media/round-one/application-storefront.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT storefront and environmental signage exploration" },
-      { name: "Campaign system", src: "/offbeat/media/round-one/application-campaign-board.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT campaign application board" },
-      { name: "Shape language", src: "/offbeat/media/round-one/application-shape-system.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT stepped shape application system" },
-      { name: "Food and apparel", src: "/offbeat/media/round-one/application-food-merch.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT food and T-shirt applications" },
-      { name: "Cap application", src: "/offbeat/media/round-one/application-cap.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT logo applied to a cap" },
-      { name: "Apparel system", src: "/offbeat/media/round-one/application-apparel.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT apparel application exploration" },
-      { name: "Editorial guide", src: "/offbeat/media/round-one/application-editorial.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT editorial guide application" },
-      { name: "Object study", src: "/offbeat/media/round-one/application-object.jpg", format: "JPG", orientation: "landscape", alt: "OFF/BEAT dimensional object exploration" },
-    ] satisfies MediaItem[],
-    social: [
-      { name: "Partnership announcement", src: "/offbeat/media/social/partnership-announcement.jpg", format: "JPG", orientation: "portrait", alt: "Raj Sharma partnership announcement social design" },
-      { name: "Cap application", src: "/offbeat/media/social/cap-application.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT embroidered cap application" },
-      { name: "Godmode launch", src: "/offbeat/media/social/godmode-launch.jpg", format: "JPG", orientation: "portrait", alt: "Godmode partnership launch social poster" },
-      { name: "Shark Tank guide", src: "/offbeat/media/social/shark-tank-guide.jpg", format: "JPG", orientation: "portrait", alt: "Shark Tank survival guide social cover" },
-      { name: "AI workshop", src: "/offbeat/media/social/ai-workshop.jpg", format: "JPG", orientation: "portrait", alt: "Breaking and building with AI workshop social design" },
-      { name: "Startup swiping", src: "/offbeat/media/social/startup-swiping.jpg", format: "JPG", orientation: "portrait", alt: "Startup swiping with Aman Gupta social poster" },
-      { name: "Work-life balance", src: "/offbeat/media/social/work-life-balance.jpg", format: "JPG", orientation: "portrait", alt: "Work-life balance editorial social design" },
-      { name: "AI duplicates", src: "/offbeat/media/social/ai-duplicates.jpg", format: "JPG", orientation: "portrait", alt: "Creating AI duplicates editorial social design" },
-      { name: "Cohort applications", src: "/offbeat/media/social/cohort-applications.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT cohort applications social design" },
-      { name: "Grooming report", src: "/offbeat/media/social/grooming-report.jpg", format: "JPG", orientation: "portrait", alt: "Men's grooming brands editorial report cover" },
-      { name: "Anti VC Club", src: "/offbeat/media/social/anti-vc-shirt.jpg", format: "JPG", orientation: "square", alt: "Anti VC Club black T-shirt application" },
-      { name: "Anti 925", src: "/offbeat/media/social/anti-925-shirt.jpg", format: "JPG", orientation: "square", alt: "Anti 925 warm-white T-shirt application" },
-      { name: "Solar investment", src: "/offbeat/media/social/solar-investment.jpg", format: "JPG", orientation: "portrait", alt: "Solar investment announcement social design" },
-      { name: "Venture capital", src: "/offbeat/media/social/venture-capital.jpg", format: "JPG", orientation: "portrait", alt: "Future of venture capital editorial social design" },
-      { name: "Starter kit", src: "/offbeat/media/social/starter-kit.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT starter kit social design" },
-    ] satisfies MediaItem[],
-    logoExports: [
-      "asset-1.png", "asset-2.png", "asset-3.png", "asset-4.png", "asset-5.png", "asset-6.png", "asset-7.png",
-      "asset-8.png", "asset-9.png", "asset-10.png", "asset-11.png", "asset-17.png", "asset-35.png", "asset-38.png",
-    ].map((file, index) => ({
-      name: `Production export ${String(index + 1).padStart(2, "0")}`,
-      src: `/offbeat/media/logo-exports/${file}`,
-      format: "PNG" as const,
-      orientation: "landscape" as const,
-      alt: `OFF/BEAT production logo export ${index + 1}`,
-    })),
+    showcase: {
+      production: [
+        { name: "Colourway master sheet", src: "/offbeat/media/logo-exports/asset-38.png", format: "PNG", orientation: "landscape", alt: "Master sheet of OFF/BEAT badge and plate colourways across pink, sienna, lilac, and neutral fields", note: "The variant system on one sheet", width: 1104, height: 832 },
+        { name: "Knockout plate", src: "/offbeat/media/logo-exports/asset-10.png", format: "PNG", orientation: "landscape", alt: "White OFF/BEAT wordmark knocked out of a black stepped plate", note: "Black production surface", width: 1236, height: 364 },
+        { name: "Co-brand lockups", src: "/offbeat/media/logo-exports/asset-17.png", format: "PNG", orientation: "landscape", alt: "Cuminco, God Mode, and Acme Inc partner lockups set in the OFF/BEAT badge", note: "Partnership usage", width: 1357, height: 221 },
+      ] satisfies MediaItem[],
+      motion: [
+        { name: "Wordmark reveal", src: "/offbeat/media/motion/logo-wordmark-reveal.mp4", format: "MP4", orientation: "square", alt: "Animated OFF/BEAT wordmark reveal", note: "Hero reveal" },
+        { name: "Slash loop", src: "/offbeat/media/motion/logo-slash-loop.mp4", format: "MP4", orientation: "square", alt: "Looping OFF/BEAT slash animation", note: "Signature loop" },
+        { name: "Email signature", src: "/offbeat/media/motion/email-signature.gif", format: "GIF", orientation: "landscape", alt: "Pink OFF/BEAT animated email signature", note: "Motion in use", width: 756, height: 230 },
+      ] satisfies MediaItem[],
+      applications: [
+        { name: "Anti VC Club tee", src: "/offbeat/media/social/anti-vc-shirt.jpg", format: "JPG", orientation: "square", alt: "Anti VC Club black T-shirt application", note: "Merchandise" },
+        { name: "Anti 925 tee", src: "/offbeat/media/social/anti-925-shirt.jpg", format: "JPG", orientation: "square", alt: "Anti 925 warm-white T-shirt application", note: "Merchandise" },
+        { name: "Embroidered cap", src: "/offbeat/media/social/cap-application.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT badge embroidered on a maroon cap", note: "Merchandise" },
+        { name: "Starter kit", src: "/offbeat/media/social/starter-kit.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT starter kit rendered as a stepped pink object", note: "Object study" },
+      ] satisfies MediaItem[],
+      social: [
+        { name: "Godmode launch", src: "/offbeat/media/social/godmode-launch.jpg", format: "JPG", orientation: "portrait", alt: "Godmode partnership launch social poster", note: "Partnership launch" },
+        { name: "Startup swiping", src: "/offbeat/media/social/startup-swiping.jpg", format: "JPG", orientation: "portrait", alt: "Startup swiping with Aman Gupta social poster", note: "Event" },
+        { name: "Partnership announcement", src: "/offbeat/media/social/partnership-announcement.jpg", format: "JPG", orientation: "portrait", alt: "Raj Sharma partnership announcement social design", note: "People" },
+        { name: "Grooming report", src: "/offbeat/media/social/grooming-report.jpg", format: "JPG", orientation: "portrait", alt: "Men's grooming brands editorial report cover", note: "Report" },
+        { name: "Venture capital", src: "/offbeat/media/social/venture-capital.jpg", format: "JPG", orientation: "portrait", alt: "Future of venture capital editorial social design", note: "Editorial" },
+      ] satisfies MediaItem[],
+    },
+    photography: [
+      {
+        number: "01",
+        title: "Recognisable references",
+        note: "Start from imagery the audience already knows, cropped with intent.",
+        item: { name: "Work-life balance", src: "/offbeat/media/social/work-life-balance.jpg", format: "JPG", orientation: "portrait", alt: "Work-life balance editorial social design" },
+      },
+      {
+        number: "02",
+        title: "One graphic intervention",
+        note: "Let repetition, montage, or type make the point — once.",
+        item: { name: "AI duplicates", src: "/offbeat/media/social/ai-duplicates.jpg", format: "JPG", orientation: "portrait", alt: "Creating AI duplicates editorial social design" },
+      },
+      {
+        number: "03",
+        title: "Controlled grain",
+        note: "Texture sits inside a single colourway so photography stays on the palette.",
+        item: { name: "Shark Tank guide", src: "/offbeat/media/social/shark-tank-guide.jpg", format: "JPG", orientation: "portrait", alt: "Shark Tank survival guide social cover" },
+      },
+    ] satisfies PhotoPrinciple[],
+    archive: [
+      {
+        title: "Logo production exports",
+        note: "Colourway and surface permutations of the badge and plate.",
+        entries: [
+          { name: "Badge on signal pink", src: "/offbeat/media/logo-exports/asset-1.png", format: "PNG", dimensions: "1083 × 1075" },
+          { name: "Badge on soft lilac", src: "/offbeat/media/logo-exports/asset-2.png", format: "PNG", dimensions: "1087 × 1079" },
+          { name: "Signal pink plate, cutout", src: "/offbeat/media/logo-exports/asset-3.png", format: "PNG", dimensions: "625 × 184" },
+          { name: "Badge on sienna I", src: "/offbeat/media/logo-exports/asset-4.png", format: "PNG", dimensions: "1085 × 1083" },
+          { name: "Badge on sienna II", src: "/offbeat/media/logo-exports/asset-5.png", format: "PNG", dimensions: "1085 × 1083" },
+          { name: "Sienna badge on lilac", src: "/offbeat/media/logo-exports/asset-6.png", format: "PNG", dimensions: "1087 × 1084" },
+          { name: "Sienna plate, cutout", src: "/offbeat/media/logo-exports/asset-7.png", format: "PNG", dimensions: "847 × 250" },
+          { name: "Sage plate, cutout", src: "/offbeat/media/logo-exports/asset-8.png", format: "PNG", dimensions: "1236 × 364" },
+          { name: "Lilac plate, cutout", src: "/offbeat/media/logo-exports/asset-9.png", format: "PNG", dimensions: "1236 × 364" },
+          { name: "Ghost wordmark on stone", src: "/offbeat/media/logo-exports/asset-11.png", format: "PNG", dimensions: "1233 × 361" },
+          { name: "Badge on oxblood, wide", src: "/offbeat/media/logo-exports/asset-35.png", format: "PNG", dimensions: "1930 × 1083" },
+        ],
+      },
+      {
+        title: "Motion studies",
+        note: "Duplicate or superseded loops, kept for production use.",
+        entries: [
+          { name: "Slash pulse", src: "/offbeat/media/motion/logo-slash.mp4", format: "MP4", dimensions: "1080 × 1080" },
+          { name: "Bracket build", src: "/offbeat/media/motion/logo-brackets.mp4", format: "MP4", dimensions: "1080 × 1080" },
+          { name: "Logo animation", src: "/offbeat/media/motion/logo-animation.gif", format: "GIF", dimensions: "1080 × 1080" },
+        ],
+      },
+      {
+        title: "Social library",
+        note: "Published posts beyond the showcased formats.",
+        entries: [
+          { name: "AI workshop", src: "/offbeat/media/social/ai-workshop.jpg", format: "JPG", dimensions: "1440 × 1829" },
+          { name: "Cohort applications", src: "/offbeat/media/social/cohort-applications.jpg", format: "JPG", dimensions: "1440 × 1800" },
+          { name: "Solar investment", src: "/offbeat/media/social/solar-investment.jpg", format: "JPG", dimensions: "1440 × 1840" },
+        ],
+      },
+    ] satisfies ArchiveGroup[],
   },
   fontDownloads: [
     { name: "Nimbus Sans Regular", path: "/offbeat/fonts/NimbusSans-Regular.otf", format: "OTF" },

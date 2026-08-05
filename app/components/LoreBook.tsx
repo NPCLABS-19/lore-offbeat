@@ -244,22 +244,45 @@ function AssetCard({ asset }: { asset: AssetItem }) {
 }
 
 function MediaCard({ item }: { item: MediaItem }) {
-  const dimensions = item.orientation === "landscape"
-    ? { width: 1800, height: 1013 }
-    : item.orientation === "square"
-      ? { width: 1440, height: 1440 }
-      : { width: 1440, height: 1800 };
+  const natural = item.width && item.height;
+  const dimensions = natural
+    ? { width: item.width, height: item.height }
+    : item.orientation === "landscape"
+      ? { width: 1800, height: 1013 }
+      : item.orientation === "square"
+        ? { width: 1440, height: 1440 }
+        : { width: 1440, height: 1800 };
 
   return (
-    <article className={`media-card media-${item.orientation}`}>
+    <article className={`media-card media-${item.orientation}${natural ? " media-natural" : ""}`}>
       <Image src={item.src} alt={item.alt} {...dimensions} unoptimized />
       <div className="media-card-meta">
-        <span>{item.name}</span>
+        <div className="media-card-title">
+          {item.note ? <small>{item.note}</small> : null}
+          <span>{item.name}</span>
+        </div>
         <a href={item.src} download aria-label={`Download ${item.name} as ${item.format}`}>
           {item.format} <Icon name="download" />
         </a>
       </div>
     </article>
+  );
+}
+
+function ExplorationFigure({ item, lead = false }: { item: MediaItem; lead?: boolean }) {
+  return (
+    <figure className={`exploration-figure${lead ? " exploration-lead" : ""}`}>
+      <Image src={item.src} alt={item.alt} width={item.width ?? 1200} height={item.height ?? 800} unoptimized />
+      <figcaption>
+        <div>
+          {item.note ? <small>{item.note}</small> : null}
+          <strong>{item.name}</strong>
+        </div>
+        <a href={item.src} download aria-label={`Download ${item.name} as ${item.format}`}>
+          {item.format} <Icon name="download" />
+        </a>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -337,34 +360,30 @@ function LogoChapter() {
       </section>
 
       <section className="content-section cream-section">
-        <SectionHeading index="01.6" title="Round one explorations">
-          Selected working studies from the original OFF/BEAT exploration deck.
+        <SectionHeading index="01.6" title="Explorations">
+          Original production artwork stands in for the exploration deck, which stays in the studio archive.
         </SectionHeading>
-        <div className="media-grid media-grid-landscape">
-          {offbeat.media.logoExplorations.map((item) => <MediaCard item={item} key={item.src} />)}
+        <div className="exploration-layout">
+          <ExplorationFigure item={offbeat.media.showcase.production[0]} lead />
+          <div className="exploration-side">
+            {offbeat.media.showcase.production.slice(1).map((item) => (
+              <ExplorationFigure item={item} key={item.src} />
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="content-section ink-section">
         <SectionHeading index="01.7" title="Logo in motion">
-          Short motion studies for digital signatures, reveals, and transitions.
+          The reveal, the signature loop, and one example in use.
         </SectionHeading>
-        <div className="media-grid motion-grid">
-          {offbeat.media.motion.map((item) => <MotionCard item={item} key={item.src} />)}
-        </div>
-      </section>
-
-      <section className="content-section asset-section">
-        <SectionHeading index="01.8" title="Production exports">
-          Downloadable logo outputs supplied with the production archive.
-        </SectionHeading>
-        <div className="media-grid logo-export-grid">
-          {offbeat.media.logoExports.map((item) => <MediaCard item={item} key={item.src} />)}
+        <div className="motion-row">
+          {offbeat.media.showcase.motion.map((item) => <MotionCard item={item} key={item.src} />)}
         </div>
       </section>
 
       <section className="content-section dont-section">
-        <SectionHeading index="01.9" title="Keep the beat">
+        <SectionHeading index="01.8" title="Keep the beat">
           {offbeat.guidelines.logo.consistency}
         </SectionHeading>
         <div className="dont-grid">
@@ -379,7 +398,6 @@ function LogoChapter() {
 
 function PhotographyChapter() {
   const chapter = offbeat.chapters[3];
-  const references = [3, 4, 6, 7, 9, 12].map((index) => offbeat.media.social[index]);
   return (
     <>
       <ChapterDirectory chapter={chapter} />
@@ -387,8 +405,17 @@ function PhotographyChapter() {
         <SectionHeading index="04.1" title="Image direction">
           Build from decisive crops, recognisable references, controlled grain, and one graphic intervention.
         </SectionHeading>
-        <div className="media-grid social-media-grid photography-media-grid">
-          {references.map((item) => <MediaCard item={item} key={item.src} />)}
+        <div className="photo-principles">
+          {offbeat.media.photography.map((principle) => (
+            <div className="photo-principle" key={principle.number}>
+              <div className="photo-principle-text">
+                <span>{principle.number}</span>
+                <h3>{principle.title}</h3>
+                <p>{principle.note}</p>
+              </div>
+              <MediaCard item={principle.item} />
+            </div>
+          ))}
         </div>
       </section>
     </>
@@ -397,26 +424,62 @@ function PhotographyChapter() {
 
 function ApplicationChapter() {
   const chapter = offbeat.chapters[5];
+  const applications = offbeat.media.showcase.applications;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="06.1" title="Application explorations">
-          Environmental, editorial, merchandise, and object studies from round one.
+        <SectionHeading index="06.1" title="Merchandise and objects">
+          Approved applications photographed in use.
         </SectionHeading>
-        <div className="media-grid media-grid-landscape">
-          {offbeat.media.applications.map((item) => <MediaCard item={item} key={item.src} />)}
+        <div className="application-collage">
+          <div className="application-column">
+            {[applications[0], applications[3]].map((item) => <MediaCard item={item} key={item.src} />)}
+          </div>
+          <div className="application-column application-column-offset">
+            {[applications[1], applications[2]].map((item) => <MediaCard item={item} key={item.src} />)}
+          </div>
         </div>
       </section>
       <section className="content-section ink-section">
-        <SectionHeading index="06.2" title="Social media design">
-          Published and exploratory social formats across announcements, reports, partnerships, and programmes.
+        <SectionHeading index="06.2" title="Social formats">
+          One example per published format. The full library is in the archive below.
         </SectionHeading>
-        <div className="media-grid social-media-grid">
-          {offbeat.media.social.map((item) => <MediaCard item={item} key={item.src} />)}
+        <div className="social-rail">
+          {offbeat.media.showcase.social.map((item) => <MediaCard item={item} key={item.src} />)}
         </div>
       </section>
     </>
+  );
+}
+
+function ArchiveSection() {
+  return (
+    <section className="archive-section" id="archive" aria-labelledby="archive-title">
+      <div className="archive-heading">
+        <p className="eyebrow">Source library</p>
+        <h2 id="archive-title">Archive</h2>
+        <p>Every supplied source file, available to download. The pages above show the curated selection.</p>
+      </div>
+      {offbeat.media.archive.map((group) => (
+        <div className="archive-group" key={group.title}>
+          <div className="archive-group-head">
+            <h3>{group.title}</h3>
+            <p>{group.note}</p>
+          </div>
+          <div className="archive-list">
+            {group.entries.map((entry) => (
+              <a href={entry.src} download key={entry.src} aria-label={`Download ${entry.name} as ${entry.format}`}>
+                <strong>{entry.name}</strong>
+                <span>{entry.dimensions}</span>
+                <span>{entry.format}</span>
+                <Icon name="download" />
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
   );
 }
 
@@ -709,6 +772,7 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
       <PhotographyChapter />
       <SystemChapter />
       <ApplicationChapter />
+      <ArchiveSection />
 
       <section className="download-book">
         <p className="eyebrow">Take it offline</p>
