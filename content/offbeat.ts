@@ -204,7 +204,7 @@ export const offbeat = {
       title: "Photography",
       summary:
         "Hard flash, direct and unsoftened, with one graphic intervention.",
-      sections: ["Hard flash", "Frame with the shape", "One graphic intervention", "Deviate from the pink"],
+      sections: ["Hard flash", "One graphic intervention", "Deviate from the pink"],
       status: "ready",
     },
     {
@@ -507,7 +507,6 @@ export const offbeat = {
       { name: "Structure", src: "/offbeat/media/inspiration/structure-silhouette.jpg", format: "JPG", orientation: "square", alt: "Figure silhouetted against a steel-framed terminal window", credit: "Thong Vo · Unsplash", cut: 0.309, steps: 1, width: 1200, height: 1200 },
       { name: "Off duty", src: "/offbeat/media/inspiration/heels-red.jpg", format: "JPG", orientation: "portrait", alt: "White heels on a paint-splattered red floor", credit: "Alejandro Escamilla · Unsplash", cut: 0.191, steps: 3, width: 1200, height: 1500 },
       { name: "City after hours", src: "/offbeat/media/inspiration/city-bridge.jpg", format: "JPG", orientation: "landscape", alt: "Suspension bridge and skyline at night", credit: "Anders Jildén · Unsplash", cut: 0.309, steps: 2, width: 1600, height: 1000 },
-      { name: "Keys", src: "/offbeat/media/inspiration/typewriter-keys.jpg", format: "JPG", orientation: "landscape", alt: "Vintage typewriter keys in close-up", credit: "Sergey Zolkin · Unsplash", cut: 0.09, steps: 1, width: 1200, height: 900 },
       { name: "Creator", src: "/offbeat/media/inspiration/camera-creator.jpg", format: "JPG", orientation: "portrait", alt: "Photographer holding a twin-lens camera, black and white", credit: "Jennifer Trovato · Unsplash", cut: 0.309, steps: 4, width: 1200, height: 1500 },
       { name: "Sea change", src: "/offbeat/media/inspiration/hooded-sea.jpg", format: "JPG", orientation: "square", alt: "Hooded figure facing the sea", credit: "Patryk Sobczak · Unsplash", cut: 0.382, steps: 2, width: 1200, height: 1200 },
       { name: "Desk hours", src: "/offbeat/media/inspiration/desk-work.jpg", format: "JPG", orientation: "landscape", alt: "Laptop and coffee on a warm wooden desk", credit: "Galymzhan Abdugalimov · Unsplash", cut: 0.191, steps: 4, width: 1600, height: 1000 },
@@ -516,24 +515,18 @@ export const offbeat = {
       {
         number: "01",
         title: "Hard flash",
-        note: "Shoot direct and unsoftened. Blown highlights, hard shadows, honest texture, a flat backdrop — the off/beat look is lit, not lifestyle.",
-        item: { name: "Hard flash portrait", src: "/offbeat/media/photography/hard-flash-portrait.jpg", format: "JPG", orientation: "landscape", alt: "Direct-flash portrait against a flat blue backdrop", width: 1200, height: 900 },
-      },
-      {
-        number: "02",
-        title: "Frame with the shape",
-        note: "Hold the subject inside a stepped frame. Keep experimenting with the corner designs — depth, count, and rhythm are all open.",
-        rule: "Only where there is room. At poster, billboard, and cover scale the cut reads; on a small crop it closes in on the subject — leave the frame square instead.",
+        note: "Shoot direct and unsoftened — blown highlights, hard shadows, honest texture. Hold the subject inside a stepped frame and keep experimenting with the corner designs; depth, count, and rhythm are all open.",
+        rule: "Frame only where there is room. At poster, billboard, and cover scale the cut reads; on a small crop it closes in on the subject — leave the frame square instead.",
         item: { name: "Godmode launch", src: "/offbeat/media/social/godmode-launch.jpg", format: "JPG", orientation: "portrait", alt: "Godmode launch poster: a black-and-white flash portrait held inside a stepped frame on signal pink", width: 1440, height: 1793 },
       },
       {
-        number: "03",
+        number: "02",
         title: "One graphic intervention",
         note: "Let repetition, montage, or type make the point — once.",
         item: { name: "AI duplicates", src: "/offbeat/media/social/ai-duplicates.jpg", format: "JPG", orientation: "portrait", alt: "Creating AI duplicates editorial social design", width: 1440, height: 1800 },
       },
       {
-        number: "04",
+        number: "03",
         title: "Deviate from the pink",
         note: "Pink is a signal, not the only ground. Olive, sienna, violet, and field green all carry the brand — pick one colourway per piece and commit to it.",
         item: { name: "Shark Tank guide", src: "/offbeat/media/social/shark-tank-guide.jpg", format: "JPG", orientation: "portrait", alt: "Shark Tank survival guide cover treated in an olive duotone", width: 1440, height: 1800 },
