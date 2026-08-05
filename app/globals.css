@@ -1174,13 +1174,49 @@ svg {
   gap: 10px;
 }
 
-.tester-controls label > span {
+.tester-controls label > span,
+.tester-fonts > span {
   display: flex;
   justify-content: space-between;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.tester-fonts {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.tester-fonts div {
+  display: flex;
+  gap: 8px;
+}
+
+.tester-fonts button {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: var(--white);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.tester-fonts button[aria-pressed="true"] {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--ink);
+}
+
+.tester-fonts button:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
 }
 
 .tester-controls input {
@@ -1197,7 +1233,15 @@ svg {
   outline: 0;
   resize: vertical;
   background: var(--pink);
-  font-family: var(--font-display), sans-serif;
+  color: var(--ink);
+  caret-color: var(--ink);
+  font-family: var(--font-primary), sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+.type-tester textarea.tester-social {
+  font-family: var(--font-social), sans-serif;
   font-variation-settings: "wdth" 62, "wght" 800;
   letter-spacing: -0.06em;
   line-height: 0.78;

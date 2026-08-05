@@ -17,6 +17,9 @@ const SESSION_KEY = "lore.offbeat.session";
 const USERS_KEY = "lore.offbeat.demo-users";
 const subscribeToHydration = () => () => undefined;
 
+const chapterBySlug = (slug: string): Chapter =>
+  offbeat.chapters.find((chapter) => chapter.slug === slug) as Chapter;
+
 function ClientFontFaces() {
   const { display, body } = offbeat.theme.fonts;
   return (
@@ -278,10 +281,10 @@ function SilhouetteGlyph({ cut, steps }: { cut: number; steps: number }) {
   );
 }
 
-function SteppedFigure({ item }: { item: InspirationItem }) {
+function SteppedFigure({ item, masked = true }: { item: InspirationItem; masked?: boolean }) {
   return (
     <figure className="stepped-figure">
-      <div className="stepped-mask" style={{ clipPath: steppedClipPath(item) }}>
+      <div className="stepped-mask" style={masked ? { clipPath: steppedClipPath(item) } : undefined}>
         <Image src={item.src} alt={item.alt} width={item.width ?? 1200} height={item.height ?? 1200} unoptimized />
       </div>
       <figcaption>
@@ -289,9 +292,11 @@ function SteppedFigure({ item }: { item: InspirationItem }) {
           <small>{item.credit}</small>
           <span>{item.name}</span>
         </div>
-        <span className="stepped-spec">
-          {item.steps} step{item.steps === 1 ? "" : "s"} · φ {item.cut.toFixed(3)}
-        </span>
+        {masked ? (
+          <span className="stepped-spec">
+            {item.steps} step{item.steps === 1 ? "" : "s"} · φ {item.cut.toFixed(3)}
+          </span>
+        ) : null}
       </figcaption>
     </figure>
   );
@@ -330,12 +335,12 @@ function MotionCard({ item }: { item: MediaItem }) {
 }
 
 function LogoChapter() {
-  const chapter = offbeat.chapters[0];
+  const chapter = chapterBySlug("logo");
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="01.1" title="Primary identifier">
+        <SectionHeading index={`${chapter.number}.1`} title="Primary identifier">
           {offbeat.guidelines.logo.primary}
         </SectionHeading>
         <div className="hero-art hero-art-pink">
@@ -349,7 +354,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section lilac-section">
-        <SectionHeading index="01.2" title="Construction">
+        <SectionHeading index={`${chapter.number}.2`} title="Construction">
           {offbeat.guidelines.logo.construction}
         </SectionHeading>
         <div className="diagram-card">
@@ -358,7 +363,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section ink-section">
-        <SectionHeading index="01.3" title="Contrast and color">
+        <SectionHeading index={`${chapter.number}.3`} title="Contrast and color">
           {offbeat.guidelines.logo.contrast}
         </SectionHeading>
         <div className="logo-color-grid">
@@ -370,7 +375,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section cream-section">
-        <SectionHeading index="01.4" title="Clearspace">
+        <SectionHeading index={`${chapter.number}.4`} title="Clearspace">
           {offbeat.guidelines.logo.clearspace}
         </SectionHeading>
         <div className="diagram-card compact-diagram">
@@ -379,7 +384,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section asset-section">
-        <SectionHeading index="01.5" title="Approved logo files">
+        <SectionHeading index={`${chapter.number}.5`} title="Approved logo files">
           {offbeat.guidelines.logo.assets}
         </SectionHeading>
         <div className="asset-grid">
@@ -388,7 +393,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section cream-section">
-        <SectionHeading index="01.6" title="Explorations">
+        <SectionHeading index={`${chapter.number}.6`} title="Explorations">
           Original production artwork stands in for the exploration deck, which stays in the studio archive.
         </SectionHeading>
         <div className="exploration-layout">
@@ -402,7 +407,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section ink-section">
-        <SectionHeading index="01.7" title="Logo in motion">
+        <SectionHeading index={`${chapter.number}.7`} title="Logo in motion">
           The reveal, the signature loop, and one example in use.
         </SectionHeading>
         <div className="motion-row">
@@ -411,7 +416,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section dont-section">
-        <SectionHeading index="01.8" title="Keep the beat">
+        <SectionHeading index={`${chapter.number}.8`} title="Keep the beat">
           {offbeat.guidelines.logo.consistency}
         </SectionHeading>
         <div className="dont-grid">
@@ -425,12 +430,12 @@ function LogoChapter() {
 }
 
 function PhotographyChapter() {
-  const chapter = offbeat.chapters[3];
+  const chapter = chapterBySlug("photography");
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="04.1" title="Image direction">
+        <SectionHeading index={`${chapter.number}.1`} title="Image direction">
           Build from decisive crops, recognisable references, controlled grain, and one graphic intervention.
         </SectionHeading>
         <div className="photo-principles">
@@ -451,13 +456,13 @@ function PhotographyChapter() {
 }
 
 function ApplicationChapter() {
-  const chapter = offbeat.chapters[5];
+  const chapter = chapterBySlug("application");
   const applications = offbeat.media.showcase.applications;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="06.1" title="Merchandise and objects">
+        <SectionHeading index={`${chapter.number}.1`} title="Merchandise and objects">
           Approved applications photographed in use.
         </SectionHeading>
         <div className="application-collage">
@@ -470,7 +475,7 @@ function ApplicationChapter() {
         </div>
       </section>
       <section className="content-section ink-section">
-        <SectionHeading index="06.2" title="Social formats">
+        <SectionHeading index={`${chapter.number}.2`} title="Social formats">
           One example per published format. The full library is in the archive below.
         </SectionHeading>
         <div className="social-rail">
@@ -515,6 +520,7 @@ function TypeTester() {
   const [text, setText] = useState("Clear ideas, carefully expressed.");
   const [size, setSize] = useState(64);
   const [weight, setWeight] = useState(500);
+  const [font, setFont] = useState<"primary" | "social">("primary");
   return (
     <div className="type-tester">
       <div className="tester-controls">
@@ -526,25 +532,40 @@ function TypeTester() {
           <span>Weight <output>{weight}</output></span>
           <input aria-label="Type weight" type="range" min="400" max="700" step="100" value={weight} onChange={(e) => setWeight(Number(e.target.value))} />
         </label>
+        <div className="tester-fonts" role="group" aria-label="Typeface">
+          <span>Typeface</span>
+          <div>
+            <button type="button" aria-pressed={font === "primary"} onClick={() => setFont("primary")}>
+              Helvetica / Nimbus
+            </button>
+            <button type="button" aria-pressed={font === "social"} onClick={() => setFont("social")}>
+              Archivo Narrow
+            </button>
+          </div>
+        </div>
       </div>
       <textarea
         aria-label="Type tester text"
+        className={font === "social" ? "tester-social" : undefined}
         value={text}
         onChange={(event) => setText(event.target.value)}
         style={{ fontSize: `clamp(2.25rem, ${size / 13}vw, ${size}px)`, fontWeight: weight }}
       />
-      <div className="tester-foot"><span>Helvetica / Nimbus Sans</span><span>Type here to test</span></div>
+      <div className="tester-foot">
+        <span>{font === "social" ? "Archivo Narrow · social headlines only" : "Helvetica / Nimbus Sans"}</span>
+        <span>Type here to test</span>
+      </div>
     </div>
   );
 }
 
 function TypographyChapter() {
-  const chapter = offbeat.chapters[1];
+  const chapter = chapterBySlug("typography");
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section type-intro">
-        <SectionHeading index="02.1" title="Primary typeface">
+        <SectionHeading index={`${chapter.number}.1`} title="Primary typeface">
           {offbeat.guidelines.typography.primary}
         </SectionHeading>
         <div className="primary-type-specimen" aria-label="Helvetica and Nimbus Sans type specimen">
@@ -564,7 +585,7 @@ function TypographyChapter() {
       </section>
 
       <section className="content-section pink-section social-type-section">
-        <SectionHeading index="02.2" title="Social headlines only">
+        <SectionHeading index={`${chapter.number}.2`} title="Social headlines only">
           {offbeat.guidelines.typography.supporting}
         </SectionHeading>
         <div className="type-hero social-type" aria-label="Archivo social headline specimen">
@@ -575,7 +596,7 @@ function TypographyChapter() {
       </section>
 
       <section className="content-section lilac-section">
-        <SectionHeading index="02.3" title="Hierarchy">
+        <SectionHeading index={`${chapter.number}.3`} title="Hierarchy">
           {offbeat.guidelines.typography.hierarchy}
         </SectionHeading>
         <div className="hierarchy-stack">
@@ -586,14 +607,14 @@ function TypographyChapter() {
       </section>
 
       <section className="content-section ink-section">
-        <SectionHeading index="02.4" title="Type tester">
+        <SectionHeading index={`${chapter.number}.4`} title="Type tester">
           {offbeat.guidelines.typography.tester}
         </SectionHeading>
         <TypeTester />
       </section>
 
       <section className="content-section asset-section font-downloads">
-        <SectionHeading index="02.5" title="Font files">
+        <SectionHeading index={`${chapter.number}.5`} title="Font files">
           {offbeat.guidelines.typography.downloads}
         </SectionHeading>
         <div className="download-list">
@@ -612,12 +633,12 @@ function TypographyChapter() {
 }
 
 function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
-  const chapter = offbeat.chapters[2];
+  const chapter = chapterBySlug("color");
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="03.1" title="Palette">
+        <SectionHeading index={`${chapter.number}.1`} title="Palette">
           {offbeat.guidelines.color.palette}
         </SectionHeading>
         <div className="swatch-grid">
@@ -640,7 +661,7 @@ function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
       </section>
 
       <section className="content-section ink-section">
-        <SectionHeading index="03.2" title="Proportion">
+        <SectionHeading index={`${chapter.number}.2`} title="Proportion">
           {offbeat.guidelines.color.proportion}
         </SectionHeading>
         <div className="color-proportion" aria-label="Recommended color proportion">
@@ -652,7 +673,7 @@ function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
       </section>
 
       <section className="content-section lilac-section">
-        <SectionHeading index="03.3" title="Combinations">
+        <SectionHeading index={`${chapter.number}.3`} title="Combinations">
           {offbeat.guidelines.color.combinations}
         </SectionHeading>
         <div className="combination-grid">
@@ -667,7 +688,7 @@ function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
 }
 
 function SystemChapter() {
-  const chapter = offbeat.chapters[4];
+  const chapter = chapterBySlug("system");
   const inspiration = offbeat.media.inspiration;
   const collective = [inspiration[1], inspiration[2], inspiration[4]];
   const repeat = inspiration[0];
@@ -681,7 +702,7 @@ function SystemChapter() {
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="05.1" title="Overview">
+        <SectionHeading index={`${chapter.number}.1`} title="Overview">
           {offbeat.guidelines.system.overview}
         </SectionHeading>
         <div className="system-overview-shapes" aria-hidden="true">
@@ -692,7 +713,7 @@ function SystemChapter() {
       </section>
 
       <section className="content-section lilac-section">
-        <SectionHeading index="05.2" title="Concept">
+        <SectionHeading index={`${chapter.number}.2`} title="Concept">
           {offbeat.guidelines.system.concept}
         </SectionHeading>
         <div className="system-concept">
@@ -707,7 +728,7 @@ function SystemChapter() {
       </section>
 
       <section className="content-section cream-section">
-        <SectionHeading index="05.3" title="Collective">
+        <SectionHeading index={`${chapter.number}.3`} title="Collective">
           {offbeat.guidelines.system.collective}
         </SectionHeading>
         <div className="system-collective">
@@ -717,7 +738,7 @@ function SystemChapter() {
       </section>
 
       <section className="content-section ink-section">
-        <SectionHeading index="05.4" title="Repeat">
+        <SectionHeading index={`${chapter.number}.4`} title="Repeat">
           {offbeat.guidelines.system.repeat}
         </SectionHeading>
         <div className="system-repeat">
@@ -730,7 +751,7 @@ function SystemChapter() {
       </section>
 
       <section className="content-section pink-section">
-        <SectionHeading index="05.5" title="Block">
+        <SectionHeading index={`${chapter.number}.5`} title="Block">
           {offbeat.guidelines.system.block}
         </SectionHeading>
         <div className="shape-showcase">
@@ -745,7 +766,7 @@ function SystemChapter() {
       </section>
 
       <section className="tool-section" id="shape-generator">
-        <div className="tool-banner"><span>{offbeat.theme.banners.app}</span><span>05.6</span></div>
+        <div className="tool-banner"><span>{offbeat.theme.banners.app}</span><span>{`${chapter.number}.6`}</span></div>
         <header className="tool-heading">
           <div><p className="eyebrow">Lore app · 01</p><h3>Shape Generator</h3></div>
           <p>{offbeat.guidelines.system.tool}</p>
@@ -757,12 +778,12 @@ function SystemChapter() {
 }
 
 function HowToChapter() {
-  const chapter = offbeat.chapters[6];
+  const chapter = chapterBySlug("howto");
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="07.1" title="The method">
+        <SectionHeading index={`${chapter.number}.1`} title="The method">
           Four moves, in order. Every off/beat piece follows them.
         </SectionHeading>
         <div className="howto-list">
@@ -783,22 +804,22 @@ function HowToChapter() {
 }
 
 function InspirationChapter() {
-  const chapter = offbeat.chapters[7];
+  const chapter = chapterBySlug("inspiration");
   const heritage = offbeat.media.heritage;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index="08.1" title="The reference">
+        <SectionHeading index={`${chapter.number}.1`} title="The reference">
           {offbeat.guidelines.inspiration.reference}
         </SectionHeading>
         <div className="heritage-board">
-          <SteppedFigure item={heritage[0]} />
+          <SteppedFigure item={heritage[0]} masked={false} />
           <div className="heritage-column">
-            {heritage.slice(1, 3).map((item) => <SteppedFigure item={item} key={item.src} />)}
+            {heritage.slice(1, 3).map((item) => <SteppedFigure item={item} masked={false} key={item.src} />)}
           </div>
           <div className="heritage-column heritage-column-offset">
-            {heritage.slice(3).map((item) => <SteppedFigure item={item} key={item.src} />)}
+            {heritage.slice(3).map((item) => <SteppedFigure item={item} masked={false} key={item.src} />)}
           </div>
         </div>
         <p className="section-note">
@@ -806,7 +827,7 @@ function InspirationChapter() {
         </p>
       </section>
       <section className="content-section lilac-section">
-        <SectionHeading index="08.2" title="Energy">
+        <SectionHeading index={`${chapter.number}.2`} title="Energy">
           {offbeat.guidelines.inspiration.energy}
         </SectionHeading>
         <div className="inspiration-board">
@@ -906,7 +927,7 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
       </section>
 
       <section className="contents-section" id="contents" aria-labelledby="contents-title">
-        <div className="contents-heading"><p className="eyebrow">Directory / 01–06</p><h2 id="contents-title">Contents</h2></div>
+        <div className="contents-heading"><p className="eyebrow">Directory / {offbeat.chapters[0].number}–{offbeat.chapters[offbeat.chapters.length - 1].number}</p><h2 id="contents-title">Contents</h2></div>
         <nav className="contents-list" aria-label="Table of contents">
           {offbeat.chapters.map((chapter) => (
             <a href={`#${chapter.slug}`} key={chapter.slug}>
@@ -917,6 +938,7 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
         <div className="contents-footer"><p>Questions, approvals, or missing files?</p><a href={`mailto:${offbeat.client.contact}`}>{offbeat.client.contact} <Icon name="arrow" /></a></div>
       </section>
 
+      <InspirationChapter />
       <LogoChapter />
       <TypographyChapter />
       <ColorChapter onCopy={copy} />
@@ -924,7 +946,6 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
       <SystemChapter />
       <ApplicationChapter />
       <HowToChapter />
-      <InspirationChapter />
       <ArchiveSection />
 
       <section className="download-book">

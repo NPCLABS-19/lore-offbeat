@@ -133,6 +133,15 @@ export const offbeat = {
   chapters: [
     {
       number: "01",
+      slug: "inspiration",
+      title: "Inspiration",
+      summary:
+        "Shape play from the heritage of India, modernised for the new Indian.",
+      sections: ["The reference", "Energy"],
+      status: "ready",
+    },
+    {
+      number: "02",
       slug: "logo",
       title: "Logo",
       summary:
@@ -150,7 +159,7 @@ export const offbeat = {
       status: "ready",
     },
     {
-      number: "02",
+      number: "03",
       slug: "typography",
       title: "Typography",
       summary:
@@ -169,7 +178,7 @@ export const offbeat = {
       status: "ready",
     },
     {
-      number: "03",
+      number: "04",
       slug: "color",
       title: "Color",
       summary:
@@ -186,7 +195,7 @@ export const offbeat = {
       status: "ready",
     },
     {
-      number: "04",
+      number: "05",
       slug: "photography",
       title: "Photography",
       summary:
@@ -195,7 +204,7 @@ export const offbeat = {
       status: "ready",
     },
     {
-      number: "05",
+      number: "06",
       slug: "system",
       title: "System",
       summary:
@@ -204,7 +213,7 @@ export const offbeat = {
       status: "ready",
     },
     {
-      number: "06",
+      number: "07",
       slug: "application",
       title: "Application",
       summary:
@@ -213,21 +222,12 @@ export const offbeat = {
       status: "ready",
     },
     {
-      number: "07",
+      number: "08",
       slug: "howto",
       title: "How to off/beat",
       summary:
         "A working method in four moves.",
       sections: ["Cut the silhouette", "Ground the colour", "Set the voice", "Intervene once"],
-      status: "ready",
-    },
-    {
-      number: "08",
-      slug: "inspiration",
-      title: "Inspiration",
-      summary:
-        "Shape play from the heritage of India, modernised for the new Indian.",
-      sections: ["The reference", "Energy"],
       status: "ready",
     },
   ] satisfies Chapter[],
