@@ -357,7 +357,7 @@ function LogoChapter() {
         </div>
         <div className="sizing-rule">
           <div className="sizing-rule-mark">
-            <Image src="/offbeat/assets/slash-insignia.png" alt="Alternate slash insignia for sizes below one inch" width={220} height={220} unoptimized />
+            <Image src="/offbeat/assets/logo-alt.png" alt="Alternate stepped slash logo, used below one inch" width={1200} height={1200} unoptimized />
           </div>
           <p>{offbeat.guidelines.logo.sizingRule}</p>
         </div>

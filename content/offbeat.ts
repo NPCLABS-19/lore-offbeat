@@ -260,7 +260,7 @@ export const offbeat = {
         { label: "Maximum size", value: "∞", note: "No maximum" },
       ],
       sizingRule:
-        "Below 1 inch the badge loses its stepped corners. Use the alternate slash insignia instead — never a shrunken primary logo.",
+        "Below 1 inch the badge loses its stepped corners. Use the alternate logo instead — never a shrunken primary logo.",
       donts: [
         { label: "Don’t stretch the logo.", glyph: "↔" },
         { label: "Don’t outline the logo.", glyph: "□" },
@@ -431,12 +431,20 @@ export const offbeat = {
       surface: "light",
     },
     {
-      name: "Slash insignia",
-      description: "A compact supporting identifier for subtle digital brand seeding.",
-      preview: "/offbeat/assets/slash-insignia.png",
-      download: "/offbeat/assets/slash-insignia.png",
+      name: "Alternate logo",
+      description: "The stepped slash mark. Use it wherever the primary logo would fall below one inch.",
+      preview: "/offbeat/assets/logo-alt.png",
+      download: "/offbeat/assets/logo-alt.png",
       format: "PNG",
-      surface: "dark",
+      surface: "light",
+    },
+    {
+      name: "Bracket wordmark",
+      description: "The bracketed OFF/BEAT lockup for horizontal spaces and headers.",
+      preview: "/offbeat/assets/logo-bracket.png",
+      download: "/offbeat/assets/logo-bracket.png",
+      format: "PNG",
+      surface: "light",
     },
   ] satisfies AssetItem[],
   /**
