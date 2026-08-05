@@ -1243,8 +1243,9 @@ svg {
 .type-tester textarea.tester-social {
   font-family: var(--font-social), sans-serif;
   font-variation-settings: "wdth" 62, "wght" 800;
-  letter-spacing: -0.06em;
-  line-height: 0.78;
+  letter-spacing: -0.02em;
+  word-spacing: 0.22em;
+  line-height: 0.84;
   text-transform: uppercase;
 }
 
@@ -1964,6 +1965,117 @@ svg {
   margin: 12px 0 0;
   font-size: 15px;
   line-height: 1.5;
+}
+
+/* Logo · minimum size fallback */
+.sizing-rule {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+  max-width: 720px;
+  margin-top: clamp(32px, 4vw, 56px);
+  padding-top: clamp(20px, 2.5vw, 32px);
+  border-top: 1px solid rgba(0, 0, 0, 0.22);
+}
+
+.sizing-rule-mark {
+  display: grid;
+  place-items: center;
+}
+
+.sizing-rule-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sizing-rule p {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.howto-rule {
+  position: relative;
+  padding-left: 16px;
+  font-weight: 500;
+}
+
+.howto-rule::before {
+  content: "/";
+  position: absolute;
+  left: 0;
+  color: var(--pink);
+  font-weight: 700;
+}
+
+.micro-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 3.5vw, 56px);
+  align-items: baseline;
+  max-width: 1080px;
+  margin-top: clamp(40px, 5vw, 72px);
+  padding-top: clamp(20px, 2.5vw, 32px);
+  border-top: 1px solid rgba(0, 0, 0, 0.22);
+  font-size: clamp(22px, 2.6vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* How to · shape in use */
+.items-rail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 48px);
+  max-width: 1440px;
+}
+
+/* How to · when not to cut */
+.ui-rule-demo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 64px);
+  max-width: 900px;
+  margin-top: clamp(28px, 4vw, 56px);
+}
+
+.ui-demo {
+  margin: 0;
+}
+
+.ui-demo-stage {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  background: var(--white);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.ui-demo-card {
+  display: inline-block;
+  padding: 12px 26px;
+  background: var(--pink);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ui-demo figcaption {
+  display: grid;
+  gap: 3px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.ui-demo figcaption strong {
+  font-weight: 500;
+}
+
+.ui-demo figcaption span {
+  opacity: 0.65;
 }
 
 /* Inspiration · heritage reference */
@@ -3141,6 +3253,14 @@ body {
   .howto-step {
     grid-template-columns: 40px 64px 1fr;
     gap: 20px;
+  }
+
+  .items-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ui-rule-demo {
+    grid-template-columns: 1fr;
   }
 
   .application-column-offset {

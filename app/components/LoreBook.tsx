@@ -321,13 +321,17 @@ function ExplorationFigure({ item, lead = false }: { item: MediaItem; lead?: boo
 
 function MotionCard({ item }: { item: MediaItem }) {
   if (item.format !== "MP4") return <MediaCard item={item} />;
+  const aspect = item.width && item.height ? { aspectRatio: `${item.width} / ${item.height}` } : undefined;
   return (
-    <article className="media-card media-square motion-card">
-      <video autoPlay loop muted playsInline preload="metadata" aria-label={item.alt}>
+    <article className={`media-card media-${item.orientation} motion-card`}>
+      <video autoPlay loop muted playsInline preload="metadata" aria-label={item.alt} style={aspect}>
         <source src={item.src} type="video/mp4" />
       </video>
       <div className="media-card-meta">
-        <span>{item.name}</span>
+        <div className="media-card-title">
+          {item.note ? <small>{item.note}</small> : null}
+          <span>{item.name}</span>
+        </div>
         <a href={item.src} download aria-label={`Download ${item.name} as MP4`}>MP4 <Icon name="download" /></a>
       </div>
     </article>
@@ -350,6 +354,12 @@ function LogoChapter() {
           {offbeat.guidelines.logo.sizing.map((rule) => (
             <div key={`${rule.label}-${rule.value}`}><span>{rule.label}</span><strong>{rule.value}</strong><p>{rule.note}</p></div>
           ))}
+        </div>
+        <div className="sizing-rule">
+          <div className="sizing-rule-mark">
+            <Image src="/offbeat/assets/slash-insignia.png" alt="Alternate slash insignia for sizes below one inch" width={220} height={220} unoptimized />
+          </div>
+          <p>{offbeat.guidelines.logo.sizingRule}</p>
         </div>
       </section>
 
@@ -445,6 +455,7 @@ function PhotographyChapter() {
                 <span>{principle.number}</span>
                 <h3>{principle.title}</h3>
                 <p>{principle.note}</p>
+                {principle.rule ? <p className="howto-rule">{principle.rule}</p> : null}
               </div>
               <MediaCard item={principle.item} />
             </div>
@@ -779,24 +790,62 @@ function SystemChapter() {
 
 function HowToChapter() {
   const chapter = chapterBySlug("howto");
+  const { intro, tools, micro, uiRule } = offbeat.guidelines.howto;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.1`} title="The method">
-          Four moves, in order. Every off/beat piece follows them.
+        <SectionHeading index={`${chapter.number}.1`} title="Three tools">
+          {intro}
         </SectionHeading>
         <div className="howto-list">
-          {offbeat.guidelines.howto.map((step) => (
-            <div className="howto-step" key={step.number}>
-              <span className="howto-number">{step.number}</span>
-              <SilhouetteGlyph cut={step.cut} steps={step.steps} />
+          {tools.map((tool) => (
+            <div className="howto-step" key={tool.number}>
+              <span className="howto-number">{tool.number}</span>
+              <SilhouetteGlyph cut={tool.cut} steps={tool.steps} />
               <div>
-                <h3>{step.title}</h3>
-                <p>{step.note}</p>
+                <h3>{tool.title}</h3>
+                <p>{tool.note}</p>
+                {tool.rule ? <p className="howto-rule">{tool.rule}</p> : null}
               </div>
             </div>
           ))}
+        </div>
+        <div className="micro-strip" aria-label="Micro graphic detail specimens">
+          {micro.map((mark) => <span key={mark}>{mark}</span>)}
+        </div>
+      </section>
+
+      <section className="content-section ink-section">
+        <SectionHeading index={`${chapter.number}.2`} title="Shape in use">
+          The stepped silhouette as product, object, and light.
+        </SectionHeading>
+        <div className="items-rail">
+          {offbeat.media.items.map((item) =>
+            item.format === "MP4"
+              ? <MotionCard item={item} key={item.src} />
+              : <MediaCard item={item} key={item.src} />,
+          )}
+        </div>
+      </section>
+
+      <section className="content-section cream-section">
+        <SectionHeading index={`${chapter.number}.3`} title="When not to cut">
+          {uiRule}
+        </SectionHeading>
+        <div className="ui-rule-demo">
+          <figure className="ui-demo">
+            <div className="ui-demo-stage">
+              <span className="ui-demo-card" style={{ clipPath: steppedClipPath({ cut: 0.191, steps: 2 }) }}>Sign in</span>
+            </div>
+            <figcaption><strong>Don’t</strong><span>Cut corners on buttons, chips, or cards.</span></figcaption>
+          </figure>
+          <figure className="ui-demo">
+            <div className="ui-demo-stage">
+              <span className="ui-demo-card">Sign in</span>
+            </div>
+            <figcaption><strong>Do</strong><span>Keep small rectangles square; let colour and type carry the brand.</span></figcaption>
+          </figure>
         </div>
       </section>
     </>

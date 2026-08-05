@@ -32,6 +32,8 @@ export type PhotoPrinciple = {
   number: string;
   title: string;
   note: string;
+  /** A hard usage rule attached to the principle, shown as a callout. */
+  rule?: string;
   item: MediaItem;
 };
 
@@ -56,11 +58,13 @@ export type InspirationItem = MediaItem & {
   steps: number;
 };
 
-export type HowToStep = {
+export type HowToTool = {
   number: string;
   title: string;
   note: string;
-  /** Silhouette drawn beside the step. */
+  /** A hard usage rule attached to the tool, shown as a callout. */
+  rule?: string;
+  /** Silhouette drawn beside the tool. */
   cut: number;
   steps: number;
 };
@@ -199,8 +203,8 @@ export const offbeat = {
       slug: "photography",
       title: "Photography",
       summary:
-        "Image treatments built from strong crops, familiar references, and graphic intervention.",
-      sections: ["Image direction", "Recognisable references", "One graphic intervention", "Controlled grain"],
+        "Hard flash, direct and unsoftened, with one graphic intervention.",
+      sections: ["Hard flash", "Frame with the shape", "One graphic intervention", "Deviate from the pink"],
       status: "ready",
     },
     {
@@ -226,8 +230,8 @@ export const offbeat = {
       slug: "howto",
       title: "How to off/beat",
       summary:
-        "A working method in four moves.",
-      sections: ["Cut the silhouette", "Ground the colour", "Set the voice", "Intervene once"],
+        "Three tools: the cut, the colour, the voice.",
+      sections: ["The corner cut", "Signal pink", "Type and micro detail", "Shape in use", "When not to cut"],
       status: "ready",
     },
   ] satisfies Chapter[],
@@ -251,10 +255,12 @@ export const offbeat = {
       consistency:
         "Protect recognition by using approved artwork.",
       sizing: [
-        { label: "Minimum size", value: "20 px", note: "On screen" },
-        { label: "Minimum size", value: "¼ in", note: "In print" },
+        { label: "Minimum size", value: "1 in", note: "In print" },
+        { label: "Minimum size", value: "96 px", note: "On screen" },
         { label: "Maximum size", value: "∞", note: "No maximum" },
       ],
+      sizingRule:
+        "Below 1 inch the badge loses its stepped corners. Use the alternate slash insignia instead — never a shrunken primary logo.",
       donts: [
         { label: "Don’t stretch the logo.", glyph: "↔" },
         { label: "Don’t outline the logo.", glyph: "□" },
@@ -325,12 +331,37 @@ export const offbeat = {
       energy:
         "Energy the brand borrows from — crowds, structures, late hours — always held inside a generator silhouette.",
     },
-    howto: [
-      { number: "01", title: "Cut the silhouette", note: "Generate a stepped frame in the Shape Generator — one to four cuts, golden-ratio depths.", cut: 0.191, steps: 1 },
-      { number: "02", title: "Ground the colour", note: "One expressive colour on a calm ground. Pink is a signal, not a wall.", cut: 0.191, steps: 2 },
-      { number: "03", title: "Set the voice", note: "Helvetica or Nimbus Sans Medium, sentence case. Archivo Narrow only for social headlines.", cut: 0.309, steps: 3 },
-      { number: "04", title: "Intervene once", note: "One crop, one repeat, or one block. Then stop.", cut: 0.309, steps: 4 },
-    ] satisfies HowToStep[],
+    howto: {
+      intro:
+        "Three separate tools make something off/beat. Use them independently or together — each one is enough to carry the brand.",
+      tools: [
+        {
+          number: "01",
+          title: "The corner cut",
+          note: "For everyday work the cut is free — one, three, or four steps, at any depth the generator allows. Keep experimenting, and give the corners enough room to read.",
+          rule: "The iconic two-step cut is exclusive to large advertising surfaces: billboards, banners, environmental takeovers.",
+          cut: 0.309,
+          steps: 2,
+        },
+        {
+          number: "02",
+          title: "Signal pink",
+          note: "One expressive colour on a calm ground. Pink is a signal, not a wall — it works without the cut.",
+          cut: 0.191,
+          steps: 3,
+        },
+        {
+          number: "03",
+          title: "Type",
+          note: "Helvetica or Nimbus Sans Medium carries the voice; Archivo Narrow shouts on social. Micro graphic detail — copyright and trademark symbols, plus regional scripts — adds texture at small sizes.",
+          cut: 0.09,
+          steps: 1,
+        },
+      ] satisfies HowToTool[],
+      micro: ["OFF/BEAT©", "ANTI 925™", "ऑफ/बीट", "OFF/BEAT®", "+65 · +99"],
+      uiRule:
+        "On small rectangles and interface elements — buttons, cards, inputs — keep corners square. Cutting at that scale congests the shape and the content inside it.",
+    },
     offline: {
       title: "Download the guide",
       description:
@@ -436,7 +467,7 @@ export const offbeat = {
         { name: "Starter kit", src: "/offbeat/media/social/starter-kit.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT starter kit rendered as a stepped pink object", note: "Object study", width: 1440, height: 1800 },
       ] satisfies MediaItem[],
       social: [
-        { name: "Godmode launch", src: "/offbeat/media/social/godmode-launch.jpg", format: "JPG", orientation: "portrait", alt: "Godmode partnership launch social poster", note: "Partnership launch", width: 1440, height: 1793 },
+        { name: "AI workshop", src: "/offbeat/media/social/ai-workshop.jpg", format: "JPG", orientation: "portrait", alt: "Breaking and building with AI workshop social design", note: "Workshop", width: 1440, height: 1829 },
         { name: "Startup swiping", src: "/offbeat/media/social/startup-swiping.jpg", format: "JPG", orientation: "portrait", alt: "Startup swiping with Aman Gupta social poster", note: "Event", width: 1440, height: 1809 },
         { name: "Partnership announcement", src: "/offbeat/media/social/partnership-announcement.jpg", format: "JPG", orientation: "portrait", alt: "Raj Sharma partnership announcement social design", note: "People", width: 1115, height: 1440 },
         { name: "Grooming report", src: "/offbeat/media/social/grooming-report.jpg", format: "JPG", orientation: "portrait", alt: "Men's grooming brands editorial report cover", note: "Report", width: 1440, height: 1786 },
@@ -444,12 +475,23 @@ export const offbeat = {
       ] satisfies MediaItem[],
     },
     /**
+     * OFF/BEAT ITEMS — supplied product posters and the neon motion piece,
+     * shown as shape-in-use examples in How to off/beat.
+     */
+    items: [
+      { name: "Cap table", src: "/offbeat/media/items/cap-table.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT ITEMS poster 01: a hot pink table with stepped corners reading CAP/TABLE", note: "Items 01", width: 1080, height: 1350 },
+      { name: "925 clock", src: "/offbeat/media/items/clock-925.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT ITEMS poster 02: a stepped pink wall clock that freezes at 9am and resumes at 5pm", note: "Items 02", width: 1080, height: 1350 },
+      { name: "Safety net", src: "/offbeat/media/items/safety-net.jpg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT ITEMS poster 03: a pink safety net for things like IIT degrees", note: "Items 03", width: 1080, height: 1350 },
+      { name: "Neon sign", src: "/offbeat/media/items/neon-sign.mp4", format: "MP4", orientation: "portrait", alt: "Glowing OFF/BEAT neon badge sign standing on a concrete block", note: "Motion", width: 900, height: 1350 },
+    ] satisfies MediaItem[],
+    /**
      * The primary reference: shape play from Indian heritage architecture.
      * Owner-supplied research images plus one Wikimedia Commons photograph;
      * reference material only, never presented as client work.
      */
     heritage: [
-      { name: "Stepwell descent", src: "/offbeat/media/inspiration/stepwell-kund.jpg", format: "JPG", orientation: "portrait", alt: "Criss-crossing stepped stairs of Panna Meena ka Kund stepwell in Amber, Jaipur", credit: "Jakub Hałun · Wikimedia Commons · CC BY-SA 4.0", cut: 0.309, steps: 3, width: 997, height: 1500 },
+      { name: "Stepwell descent", src: "/offbeat/media/inspiration/stepwell-kund.jpg", format: "JPG", orientation: "portrait", alt: "Terracotta stepwell at Panna Meena ka Kund, a figure in teal walking its criss-crossing steps", credit: "Supplied reference", cut: 0.309, steps: 3, width: 1163, height: 1400 },
+      { name: "Stepped tilework", src: "/offbeat/media/inspiration/stepped-tilework.jpg", format: "JPG", orientation: "portrait", alt: "Pink wall inlaid with blue tiles forming a stepped diamond around a recessed niche", credit: "Supplied reference", cut: 0.191, steps: 3, width: 1050, height: 1400 },
       { name: "Stepwell geometry", src: "/offbeat/media/inspiration/stepwell-geometry.jpg", format: "JPG", orientation: "portrait", alt: "Sunlit zigzag steps of a sandstone stepwell", credit: "Supplied reference", cut: 0.191, steps: 4, width: 934, height: 1400 },
       { name: "Stone jaali", src: "/offbeat/media/inspiration/stone-jaali.jpg", format: "JPG", orientation: "portrait", alt: "Carved stone jaali screen with stepped square openings and floral rosettes", credit: "Supplied reference · IndiTales", cut: 0.382, steps: 2, width: 480, height: 640 },
       { name: "Brick jaali", src: "/offbeat/media/inspiration/brick-jaali.jpg", format: "JPG", orientation: "square", alt: "Red brick jaali wall of repeating stepped cross openings", credit: "Supplied reference", cut: 0.309, steps: 1, width: 576, height: 599 },
@@ -473,21 +515,28 @@ export const offbeat = {
     photography: [
       {
         number: "01",
-        title: "Recognisable references",
-        note: "Start from imagery the audience already knows, cropped with intent.",
-        item: { name: "Work-life balance", src: "/offbeat/media/social/work-life-balance.jpg", format: "JPG", orientation: "portrait", alt: "Work-life balance editorial social design", width: 1440, height: 1800 },
+        title: "Hard flash",
+        note: "Shoot direct and unsoftened. Blown highlights, hard shadows, honest texture, a flat backdrop — the off/beat look is lit, not lifestyle.",
+        item: { name: "Hard flash portrait", src: "/offbeat/media/photography/hard-flash-portrait.jpg", format: "JPG", orientation: "landscape", alt: "Direct-flash portrait against a flat blue backdrop", width: 1200, height: 900 },
       },
       {
         number: "02",
+        title: "Frame with the shape",
+        note: "Hold the subject inside a stepped frame. Keep experimenting with the corner designs — depth, count, and rhythm are all open.",
+        rule: "Only where there is room. At poster, billboard, and cover scale the cut reads; on a small crop it closes in on the subject — leave the frame square instead.",
+        item: { name: "Godmode launch", src: "/offbeat/media/social/godmode-launch.jpg", format: "JPG", orientation: "portrait", alt: "Godmode launch poster: a black-and-white flash portrait held inside a stepped frame on signal pink", width: 1440, height: 1793 },
+      },
+      {
+        number: "03",
         title: "One graphic intervention",
         note: "Let repetition, montage, or type make the point — once.",
         item: { name: "AI duplicates", src: "/offbeat/media/social/ai-duplicates.jpg", format: "JPG", orientation: "portrait", alt: "Creating AI duplicates editorial social design", width: 1440, height: 1800 },
       },
       {
-        number: "03",
-        title: "Controlled grain",
-        note: "Texture sits inside a single colourway so photography stays on the palette.",
-        item: { name: "Shark Tank guide", src: "/offbeat/media/social/shark-tank-guide.jpg", format: "JPG", orientation: "portrait", alt: "Shark Tank survival guide social cover", width: 1440, height: 1800 },
+        number: "04",
+        title: "Deviate from the pink",
+        note: "Pink is a signal, not the only ground. Olive, sienna, violet, and field green all carry the brand — pick one colourway per piece and commit to it.",
+        item: { name: "Shark Tank guide", src: "/offbeat/media/social/shark-tank-guide.jpg", format: "JPG", orientation: "portrait", alt: "Shark Tank survival guide cover treated in an olive duotone", width: 1440, height: 1800 },
       },
     ] satisfies PhotoPrinciple[],
     archive: [
@@ -521,9 +570,18 @@ export const offbeat = {
         title: "Social library",
         note: "Published posts beyond the showcased formats.",
         entries: [
-          { name: "AI workshop", src: "/offbeat/media/social/ai-workshop.jpg", format: "JPG", dimensions: "1440 × 1829" },
+          { name: "Work-life balance", src: "/offbeat/media/social/work-life-balance.jpg", format: "JPG", dimensions: "1440 × 1800" },
           { name: "Cohort applications", src: "/offbeat/media/social/cohort-applications.jpg", format: "JPG", dimensions: "1440 × 1800" },
           { name: "Solar investment", src: "/offbeat/media/social/solar-investment.jpg", format: "JPG", dimensions: "1440 × 1840" },
+        ],
+      },
+      {
+        title: "Print production",
+        note: "Dielines and print-ready artwork for physical applications.",
+        entries: [
+          { name: "Book cover dieline", src: "/offbeat/print/book-cover-dieline.pdf", format: "PDF", dimensions: "Cover spread" },
+          { name: "Tote bag dieline", src: "/offbeat/print/tote-bag-dieline.pdf", format: "PDF", dimensions: "Print artwork" },
+          { name: "Coaster dieline", src: "/offbeat/print/coaster-dieline.pdf", format: "PDF", dimensions: "4 × 4 in" },
         ],
       },
     ] satisfies ArchiveGroup[],
