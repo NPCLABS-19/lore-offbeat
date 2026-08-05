@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
   },
+  // Client brand material: keep the prototype out of search indexes.
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false },
+  },
   openGraph: {
     type: "website",
     title: "OFF/BEAT Brand Guidelines",

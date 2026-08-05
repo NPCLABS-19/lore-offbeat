@@ -43,7 +43,13 @@ export default defineConfig(async () => {
   // Wrangler snapshots its log path while the Cloudflare plugin is imported.
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
+  // GitHub Pages project sites are served from /<repo>. Vite resolves chunk
+  // and preload URLs against `base`, so it must be set at build time —
+  // patching emitted files afterwards misses the relative preload manifest.
+  const basePath = process.env.BASE_PATH?.replace(/\/$/, "");
+
   return {
+    base: basePath ? `${basePath}/` : "/",
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
