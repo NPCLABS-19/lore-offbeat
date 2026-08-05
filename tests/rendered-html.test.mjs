@@ -40,6 +40,9 @@ test("keeps client content and downloadable files centralized", async () => {
   assert.match(config, /showcase:\s*{/);
   assert.match(config, /archive:\s*\[/);
   assert.match(config, /photography:\s*\[/);
+  assert.match(config, /inspiration:\s*\[/);
+  assert.match(config, /slug:\s*"howto"/);
+  assert.match(config, /slug:\s*"inspiration"/);
   assert.match(config, /social:/);
   assert.match(config, /motion:/);
   assert.match(config, /offbeat-brand-guidelines\.pdf/);
@@ -64,6 +67,7 @@ test("keeps client content and downloadable files centralized", async () => {
     access(new URL("../public/offbeat/media/logo-exports/asset-38.png", import.meta.url)),
     access(new URL("../public/offbeat/media/motion/logo-slash-loop.mp4", import.meta.url)),
     access(new URL("../public/offbeat/media/social/partnership-announcement.jpg", import.meta.url)),
+    access(new URL("../public/offbeat/media/inspiration/crowd-energy.jpg", import.meta.url)),
     access(new URL("../public/og.png", import.meta.url)),
   ]);
 });

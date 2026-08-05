@@ -1756,6 +1756,185 @@ svg {
   background: rgba(255, 255, 255, 0.35);
 }
 
+/* System · stepped silhouette */
+.silhouette-glyph {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.silhouette-glyph path {
+  fill: currentColor;
+}
+
+.system-overview-shapes {
+  display: flex;
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+  margin-top: clamp(28px, 4vw, 56px);
+  color: var(--pink);
+}
+
+.system-overview-shapes .silhouette-glyph {
+  width: clamp(64px, 8vw, 120px);
+}
+
+.system-concept {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(24px, 3.5vw, 56px);
+  max-width: 1280px;
+  margin-top: clamp(28px, 4vw, 56px);
+  color: var(--ink);
+}
+
+.system-concept-cell .silhouette-glyph {
+  width: min(100%, 200px);
+}
+
+.system-concept-cell span {
+  display: block;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.system-concept-cell small {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.system-collective {
+  display: grid;
+  grid-template-columns: 38.2fr 61.8fr;
+  gap: clamp(32px, 4.5vw, 72px);
+  align-items: start;
+  max-width: 1280px;
+}
+
+.system-collective > :nth-child(2) {
+  margin-top: clamp(56px, 8vw, 130px);
+}
+
+.system-repeat {
+  display: grid;
+  grid-template-columns: 23.6fr 38.2fr 61.8fr;
+  gap: clamp(20px, 3vw, 48px);
+  align-items: end;
+  max-width: 1280px;
+}
+
+.system-repeat-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.stepped-figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.stepped-mask img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.stepped-figure figcaption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.stepped-figure figcaption div {
+  display: grid;
+  gap: 3px;
+}
+
+.stepped-figure figcaption small {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.62;
+}
+
+.stepped-spec {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.62;
+  font-variant-numeric: tabular-nums;
+}
+
+.section-note {
+  max-width: 62ch;
+  margin: clamp(28px, 4vw, 48px) 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.62;
+}
+
+/* How to off/beat */
+.howto-list {
+  display: grid;
+  max-width: 1080px;
+  margin-top: clamp(28px, 4vw, 56px);
+}
+
+.howto-step {
+  display: grid;
+  grid-template-columns: 56px clamp(72px, 9vw, 128px) 1fr;
+  gap: clamp(24px, 4vw, 72px);
+  align-items: center;
+  padding: clamp(28px, 3.5vw, 48px) 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.22);
+}
+
+.howto-number {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.howto-step .silhouette-glyph {
+  color: var(--pink);
+}
+
+.howto-step h3 {
+  margin: 0;
+  font-size: clamp(26px, 2.8vw, 42px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.howto-step p {
+  max-width: 52ch;
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* Inspiration moodboard */
+.inspiration-board {
+  columns: 3 300px;
+  column-gap: clamp(24px, 3vw, 48px);
+  max-width: 1360px;
+  margin-top: clamp(28px, 4vw, 56px);
+}
+
+.inspiration-board .stepped-figure {
+  break-inside: avoid;
+  margin-bottom: clamp(36px, 4.5vw, 64px);
+}
+
 /* Archive · download library */
 .archive-section {
   padding: clamp(80px, 10vw, 140px) var(--gutter);
@@ -2869,6 +3048,23 @@ body {
   .photo-principle .media-card {
     width: 100%;
     justify-self: start;
+  }
+
+  .system-concept {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .system-collective {
+    grid-template-columns: 1fr;
+  }
+
+  .system-collective > :nth-child(2) {
+    margin-top: 0;
+  }
+
+  .howto-step {
+    grid-template-columns: 40px 64px 1fr;
+    gap: 20px;
   }
 
   .application-column-offset {

@@ -48,6 +48,23 @@ export type ArchiveGroup = {
   entries: ArchiveEntry[];
 };
 
+export type InspirationItem = MediaItem & {
+  /** Attribution for open-source reference imagery. */
+  credit: string;
+  /** Silhouette parameters, matching the Shape Generator's presets. */
+  cut: number;
+  steps: number;
+};
+
+export type HowToStep = {
+  number: string;
+  title: string;
+  note: string;
+  /** Silhouette drawn beside the step. */
+  cut: number;
+  steps: number;
+};
+
 /**
  * LORE CLIENT CONFIG
  * ------------------
@@ -182,8 +199,8 @@ export const offbeat = {
       slug: "system",
       title: "System",
       summary:
-        "Stepped geometry for layouts, frames, and motion.",
-      sections: ["Shape language", "Composition", "Generator", "Export"],
+        "One stepped silhouette carries colour, image, and voice.",
+      sections: ["Overview", "Concept", "Collective", "Repeat", "Block", "Generator"],
       status: "ready",
     },
     {
@@ -193,6 +210,24 @@ export const offbeat = {
       summary:
         "Approved merchandise, object, and social applications.",
       sections: ["Merchandise and objects", "Social formats"],
+      status: "ready",
+    },
+    {
+      number: "07",
+      slug: "howto",
+      title: "How to off/beat",
+      summary:
+        "A working method in four moves.",
+      sections: ["Cut the silhouette", "Ground the colour", "Set the voice", "Intervene once"],
+      status: "ready",
+    },
+    {
+      number: "08",
+      slug: "inspiration",
+      title: "Inspiration",
+      summary:
+        "Reference energy, held inside the off/beat silhouette.",
+      sections: ["Moodboard", "Credits"],
       status: "ready",
     },
   ] satisfies Chapter[],
@@ -264,6 +299,16 @@ export const offbeat = {
       ],
     },
     system: {
+      overview:
+        "The system is where the brand comes alive. Every frame is one silhouette — a rectangle that loses its corners in equal steps, cut in the Shape Generator.",
+      concept:
+        "Every frame starts as a rectangle and loses its corners in equal steps. One to four cuts, set to the golden ratio — always from the generator, never drawn by hand.",
+      collective:
+        "Photography sits inside the silhouette. Vary the scale, the cut, and the count — the shape does the framing.",
+      repeat:
+        "One image, repeated across silhouettes, expresses momentum.",
+      block:
+        "Colour can replace photography as a block, carrying type or pattern.",
       shape:
         "Repeat, rotate, or frame with the stepped shape.",
       principles: [
@@ -274,6 +319,12 @@ export const offbeat = {
       tool:
         "Build and export an approved stepped composition.",
     },
+    howto: [
+      { number: "01", title: "Cut the silhouette", note: "Generate a stepped frame in the Shape Generator — one to four cuts, golden-ratio depths.", cut: 0.191, steps: 1 },
+      { number: "02", title: "Ground the colour", note: "One expressive colour on a calm ground. Pink is a signal, not a wall.", cut: 0.191, steps: 2 },
+      { number: "03", title: "Set the voice", note: "Helvetica or Nimbus Sans Medium, sentence case. Archivo Narrow only for social headlines.", cut: 0.309, steps: 3 },
+      { number: "04", title: "Intervene once", note: "One crop, one repeat, or one block. Then stop.", cut: 0.309, steps: 4 },
+    ] satisfies HowToStep[],
     offline: {
       title: "Download the guide",
       description:
@@ -386,6 +437,21 @@ export const offbeat = {
         { name: "Venture capital", src: "/offbeat/media/social/venture-capital.jpg", format: "JPG", orientation: "portrait", alt: "Future of venture capital editorial social design", note: "Editorial", width: 1440, height: 1800 },
       ] satisfies MediaItem[],
     },
+    /**
+     * Open-source reference imagery (Unsplash archive via Lorem Picsum).
+     * Not client work — shown only inside System and Inspiration as
+     * clearly-credited reference material held in the brand silhouette.
+     */
+    inspiration: [
+      { name: "Crowd energy", src: "/offbeat/media/inspiration/crowd-energy.jpg", format: "JPG", orientation: "portrait", alt: "Concert crowd with raised hands under stage light", credit: "Desi Mendoza · Unsplash", cut: 0.191, steps: 2, width: 1200, height: 1500 },
+      { name: "Structure", src: "/offbeat/media/inspiration/structure-silhouette.jpg", format: "JPG", orientation: "square", alt: "Figure silhouetted against a steel-framed terminal window", credit: "Thong Vo · Unsplash", cut: 0.309, steps: 1, width: 1200, height: 1200 },
+      { name: "Off duty", src: "/offbeat/media/inspiration/heels-red.jpg", format: "JPG", orientation: "portrait", alt: "White heels on a paint-splattered red floor", credit: "Alejandro Escamilla · Unsplash", cut: 0.191, steps: 3, width: 1200, height: 1500 },
+      { name: "City after hours", src: "/offbeat/media/inspiration/city-bridge.jpg", format: "JPG", orientation: "landscape", alt: "Suspension bridge and skyline at night", credit: "Anders Jildén · Unsplash", cut: 0.309, steps: 2, width: 1600, height: 1000 },
+      { name: "Keys", src: "/offbeat/media/inspiration/typewriter-keys.jpg", format: "JPG", orientation: "landscape", alt: "Vintage typewriter keys in close-up", credit: "Sergey Zolkin · Unsplash", cut: 0.09, steps: 1, width: 1200, height: 900 },
+      { name: "Creator", src: "/offbeat/media/inspiration/camera-creator.jpg", format: "JPG", orientation: "portrait", alt: "Photographer holding a twin-lens camera, black and white", credit: "Jennifer Trovato · Unsplash", cut: 0.309, steps: 4, width: 1200, height: 1500 },
+      { name: "Sea change", src: "/offbeat/media/inspiration/hooded-sea.jpg", format: "JPG", orientation: "square", alt: "Hooded figure facing the sea", credit: "Patryk Sobczak · Unsplash", cut: 0.382, steps: 2, width: 1200, height: 1200 },
+      { name: "Desk hours", src: "/offbeat/media/inspiration/desk-work.jpg", format: "JPG", orientation: "landscape", alt: "Laptop and coffee on a warm wooden desk", credit: "Galymzhan Abdugalimov · Unsplash", cut: 0.191, steps: 4, width: 1600, height: 1000 },
+    ] satisfies InspirationItem[],
     photography: [
       {
         number: "01",

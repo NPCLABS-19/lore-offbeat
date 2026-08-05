@@ -9,7 +9,8 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { offbeat, type AssetItem, type Chapter, type MediaItem } from "@/content/offbeat";
+import { offbeat, type AssetItem, type Chapter, type InspirationItem, type MediaItem } from "@/content/offbeat";
+import { steppedClipPath, steppedSvgPath } from "@/app/lib/steppedShape";
 import { ShapeGenerator } from "./ShapeGenerator";
 
 const SESSION_KEY = "lore.offbeat.session";
@@ -266,6 +267,33 @@ function MediaCard({ item }: { item: MediaItem }) {
         </a>
       </div>
     </article>
+  );
+}
+
+function SilhouetteGlyph({ cut, steps }: { cut: number; steps: number }) {
+  return (
+    <svg className="silhouette-glyph" viewBox="0 0 100 100" aria-hidden="true">
+      <path d={steppedSvgPath({ cut, steps })} />
+    </svg>
+  );
+}
+
+function SteppedFigure({ item }: { item: InspirationItem }) {
+  return (
+    <figure className="stepped-figure">
+      <div className="stepped-mask" style={{ clipPath: steppedClipPath(item) }}>
+        <Image src={item.src} alt={item.alt} width={item.width ?? 1200} height={item.height ?? 1200} unoptimized />
+      </div>
+      <figcaption>
+        <div>
+          <small>{item.credit}</small>
+          <span>{item.name}</span>
+        </div>
+        <span className="stepped-spec">
+          {item.steps} step{item.steps === 1 ? "" : "s"} · φ {item.cut.toFixed(3)}
+        </span>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -640,12 +668,70 @@ function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
 
 function SystemChapter() {
   const chapter = offbeat.chapters[4];
+  const inspiration = offbeat.media.inspiration;
+  const collective = [inspiration[1], inspiration[2], inspiration[4]];
+  const repeat = inspiration[0];
+  const conceptVariants = [
+    { label: "One cut", cut: 0.191, steps: 1 },
+    { label: "Two cuts · the mark", cut: 0.191, steps: 2 },
+    { label: "Three cuts", cut: 0.309, steps: 3 },
+    { label: "Four cuts", cut: 0.309, steps: 4 },
+  ];
   return (
     <>
       <ChapterDirectory chapter={chapter} />
+      <section className="content-section cream-section">
+        <SectionHeading index="05.1" title="Overview">
+          {offbeat.guidelines.system.overview}
+        </SectionHeading>
+        <div className="system-overview-shapes" aria-hidden="true">
+          {conceptVariants.map((variant) => (
+            <SilhouetteGlyph cut={variant.cut} steps={variant.steps} key={variant.label} />
+          ))}
+        </div>
+      </section>
+
+      <section className="content-section lilac-section">
+        <SectionHeading index="05.2" title="Concept">
+          {offbeat.guidelines.system.concept}
+        </SectionHeading>
+        <div className="system-concept">
+          {conceptVariants.map((variant) => (
+            <div className="system-concept-cell" key={variant.label}>
+              <SilhouetteGlyph cut={variant.cut} steps={variant.steps} />
+              <span>{variant.label}</span>
+              <small>φ {variant.cut.toFixed(3)}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="content-section cream-section">
+        <SectionHeading index="05.3" title="Collective">
+          {offbeat.guidelines.system.collective}
+        </SectionHeading>
+        <div className="system-collective">
+          {collective.map((item) => <SteppedFigure item={item} key={item.src} />)}
+        </div>
+        <p className="section-note">Reference imagery from the Inspiration chapter, held in generator silhouettes.</p>
+      </section>
+
+      <section className="content-section ink-section">
+        <SectionHeading index="05.4" title="Repeat">
+          {offbeat.guidelines.system.repeat}
+        </SectionHeading>
+        <div className="system-repeat">
+          {[0, 1, 2].map((index) => (
+            <div className="system-repeat-item" key={index} style={{ clipPath: steppedClipPath(repeat) }}>
+              <Image src={repeat.src} alt={index === 0 ? repeat.alt : ""} width={repeat.width ?? 1200} height={repeat.height ?? 1500} unoptimized />
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="content-section pink-section">
-        <SectionHeading index="05.1" title="Shape language">
-          {offbeat.guidelines.system.shape}
+        <SectionHeading index="05.5" title="Block">
+          {offbeat.guidelines.system.block}
         </SectionHeading>
         <div className="shape-showcase">
           <Image src="/offbeat/assets/shape-grid.svg" alt="Four warm-white stepped blocks around the words Custom patterns" width={1000} height={563} unoptimized />
@@ -657,13 +743,60 @@ function SystemChapter() {
           ))}
         </div>
       </section>
+
       <section className="tool-section" id="shape-generator">
-        <div className="tool-banner"><span>{offbeat.theme.banners.app}</span><span>05.2</span></div>
+        <div className="tool-banner"><span>{offbeat.theme.banners.app}</span><span>05.6</span></div>
         <header className="tool-heading">
           <div><p className="eyebrow">Lore app · 01</p><h3>Shape Generator</h3></div>
           <p>{offbeat.guidelines.system.tool}</p>
         </header>
         <ShapeGenerator />
+      </section>
+    </>
+  );
+}
+
+function HowToChapter() {
+  const chapter = offbeat.chapters[6];
+  return (
+    <>
+      <ChapterDirectory chapter={chapter} />
+      <section className="content-section cream-section">
+        <SectionHeading index="07.1" title="The method">
+          Four moves, in order. Every off/beat piece follows them.
+        </SectionHeading>
+        <div className="howto-list">
+          {offbeat.guidelines.howto.map((step) => (
+            <div className="howto-step" key={step.number}>
+              <span className="howto-number">{step.number}</span>
+              <SilhouetteGlyph cut={step.cut} steps={step.steps} />
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
+function InspirationChapter() {
+  const chapter = offbeat.chapters[7];
+  return (
+    <>
+      <ChapterDirectory chapter={chapter} />
+      <section className="content-section lilac-section">
+        <SectionHeading index="08.1" title="Moodboard">
+          Energy the brand borrows from — crowds, structures, late hours — always held inside a generator silhouette.
+        </SectionHeading>
+        <div className="inspiration-board">
+          {offbeat.media.inspiration.map((item) => <SteppedFigure item={item} key={item.src} />)}
+        </div>
+        <p className="section-note">
+          Open-source photography (Unsplash archive via Lorem Picsum), credited per image. Reference only — not client work.
+        </p>
       </section>
     </>
   );
@@ -772,6 +905,8 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
       <PhotographyChapter />
       <SystemChapter />
       <ApplicationChapter />
+      <HowToChapter />
+      <InspirationChapter />
       <ArchiveSection />
 
       <section className="download-book">
