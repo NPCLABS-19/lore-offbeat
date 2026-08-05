@@ -1922,6 +1922,26 @@ svg {
   line-height: 1.5;
 }
 
+/* Inspiration · heritage reference */
+.heritage-board {
+  display: grid;
+  grid-template-columns: 61.8fr 38.2fr 38.2fr;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+  max-width: 1360px;
+  margin-top: clamp(28px, 4vw, 56px);
+}
+
+.heritage-column {
+  display: grid;
+  gap: clamp(36px, 4.5vw, 64px);
+  align-content: start;
+}
+
+.heritage-column-offset {
+  margin-top: clamp(56px, 8vw, 130px);
+}
+
 /* Inspiration moodboard */
 .inspiration-board {
   columns: 3 300px;
@@ -3059,6 +3079,18 @@ body {
   }
 
   .system-collective > :nth-child(2) {
+    margin-top: 0;
+  }
+
+  .heritage-board {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .heritage-board > .stepped-figure:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .heritage-column-offset {
     margin-top: 0;
   }
 

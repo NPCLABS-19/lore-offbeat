@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import Image from "next/image";
+import { useMemo, useState, type ChangeEvent, type CSSProperties } from "react";
 
 const MIN_DIMENSION = 80;
 const MAX_DIMENSION = 2400;
@@ -17,6 +18,10 @@ type GeneratorState = {
   fill: string;
   background: string;
   gradient: boolean;
+  /** Data URL of an uploaded image, masked into the generated shape. */
+  imageSrc: string | null;
+  /** Rotate every shape in unison, like clock hands. */
+  clockwork: boolean;
   sticker: boolean;
   label: string;
   number: string;
@@ -147,6 +152,7 @@ function shapeGroup(
   width: number,
   height: number,
   fillReference: string,
+  ids: { next: number },
 ) {
   const [cutX, cutY] = cutSizes(state, width, height);
   const path = shapePath(width, height, cutX, cutY, state.steps);
@@ -155,7 +161,23 @@ function shapeGroup(
       ? ` stroke="${state.background}" stroke-width="${state.stroke}" stroke-linejoin="miter"`
       : "";
 
-  return `<g transform="${rotationTransform(width, height, state.rotation)}"><path d="${path}" fill="${fillReference}"${stroke}/></g>`;
+  let artwork: string;
+  if (state.imageSrc) {
+    const clipId = `obsg-clip-${ids.next}`;
+    ids.next += 1;
+    artwork =
+      `<clipPath id="${clipId}"><path d="${path}"/></clipPath>` +
+      `<image href="${state.imageSrc}" x="0" y="0" width="${width}" height="${height}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${clipId})"/>` +
+      (stroke ? `<path d="${path}" fill="none"${stroke}/>` : "");
+  } else {
+    artwork = `<path d="${path}" fill="${fillReference}"${stroke}/>`;
+  }
+
+  const body = state.clockwork
+    ? `<g><animateTransform attributeName="transform" type="rotate" from="0 ${width / 2} ${height / 2}" to="360 ${width / 2} ${height / 2}" dur="12s" repeatCount="indefinite"/>${artwork}</g>`
+    : artwork;
+
+  return `<g transform="${rotationTransform(width, height, state.rotation)}">${body}</g>`;
 }
 
 function ornamentalText(
@@ -241,10 +263,11 @@ function buildSvg(state: GeneratorState) {
   const background = state.sticker
     ? ""
     : `<rect width="${width}" height="${height}" fill="${state.background}"/>`;
+  const ids = { next: 0 };
   let body = "";
 
   if (state.layout === 1) {
-    body = shapeGroup(state, width, height, fillReference);
+    body = shapeGroup(state, width, height, fillReference, ids);
   } else {
     const columns = state.layout;
     const gap = Math.min(width, height) * 0.04;
@@ -260,6 +283,7 @@ function buildSvg(state: GeneratorState) {
           cellWidth,
           cellHeight,
           fillReference,
+          ids,
         )}</g>`;
       }
     }
@@ -328,6 +352,8 @@ export function ShapeGenerator({
     fill: accent,
     background: ink,
     gradient: false,
+    imageSrc: null,
+    clockwork: false,
     sticker: false,
     label: "925 CLOCK",
     number: "02",
@@ -360,6 +386,20 @@ export function ShapeGenerator({
 
   const chooseRatio = (ratio: number) => {
     patchState({ height: clampDimension(state.width / ratio) });
+  };
+
+  const uploadImage = (event: ChangeEvent<HTMLInputElement>) => {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        patchState({ imageSrc: reader.result });
+      }
+    };
+    reader.readAsDataURL(file);
+    input.value = "";
   };
 
   const randomize = () => {
@@ -601,6 +641,50 @@ export function ShapeGenerator({
               </button>
             ))}
           </div>
+          <label className="obsg-toggle">
+            <span>Clockwork motion</span>
+            <input
+              type="checkbox"
+              checked={state.clockwork}
+              onChange={(event) => patchState({ clockwork: event.currentTarget.checked })}
+            />
+          </label>
+          {state.clockwork ? (
+            <p className="obsg-hint">
+              Every shape rotates in unison, like clock hands. SVG export keeps the motion; PNG captures a still.
+            </p>
+          ) : null}
+        </fieldset>
+
+        <fieldset className="obsg-group">
+          <legend>Image fill</legend>
+          {state.imageSrc ? (
+            <div className="obsg-image-row">
+              <Image
+                className="obsg-image-thumb"
+                src={state.imageSrc}
+                alt="Uploaded image used as shape fill"
+                width={44}
+                height={44}
+                unoptimized
+              />
+              <button
+                type="button"
+                className="obsg-chip"
+                onClick={() => patchState({ imageSrc: null })}
+              >
+                Remove image
+              </button>
+            </div>
+          ) : (
+            <label className="obsg-chip obsg-upload">
+              Upload image
+              <input type="file" accept="image/*" onChange={uploadImage} />
+            </label>
+          )}
+          <p className="obsg-hint">
+            Masked into the generated shape. The file stays in this browser.
+          </p>
         </fieldset>
 
         <fieldset className="obsg-group">
@@ -1030,6 +1114,29 @@ const componentStyles = `
   }
 
   .obsg-range-label { margin-top: 13px; }
+
+  .obsg-upload {
+    display: inline-block;
+    margin-top: 4px;
+    cursor: pointer;
+  }
+
+  .obsg-upload input { display: none; }
+
+  .obsg-image-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .obsg-image-thumb {
+    display: block;
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border: 1px solid var(--obsg-line);
+  }
 
   .obsg-color-fields {
     display: flex;

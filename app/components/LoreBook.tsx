@@ -784,12 +784,30 @@ function HowToChapter() {
 
 function InspirationChapter() {
   const chapter = offbeat.chapters[7];
+  const heritage = offbeat.media.heritage;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
+      <section className="content-section cream-section">
+        <SectionHeading index="08.1" title="The reference">
+          {offbeat.guidelines.inspiration.reference}
+        </SectionHeading>
+        <div className="heritage-board">
+          <SteppedFigure item={heritage[0]} />
+          <div className="heritage-column">
+            {heritage.slice(1, 3).map((item) => <SteppedFigure item={item} key={item.src} />)}
+          </div>
+          <div className="heritage-column heritage-column-offset">
+            {heritage.slice(3).map((item) => <SteppedFigure item={item} key={item.src} />)}
+          </div>
+        </div>
+        <p className="section-note">
+          Owner-supplied research imagery plus one Wikimedia Commons photograph, credited per image. Reference only — not client work.
+        </p>
+      </section>
       <section className="content-section lilac-section">
-        <SectionHeading index="08.1" title="Moodboard">
-          Energy the brand borrows from — crowds, structures, late hours — always held inside a generator silhouette.
+        <SectionHeading index="08.2" title="Energy">
+          {offbeat.guidelines.inspiration.energy}
         </SectionHeading>
         <div className="inspiration-board">
           {offbeat.media.inspiration.map((item) => <SteppedFigure item={item} key={item.src} />)}

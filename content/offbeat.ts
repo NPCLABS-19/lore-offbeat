@@ -226,8 +226,8 @@ export const offbeat = {
       slug: "inspiration",
       title: "Inspiration",
       summary:
-        "Reference energy, held inside the off/beat silhouette.",
-      sections: ["Moodboard", "Credits"],
+        "Shape play from the heritage of India, modernised for the new Indian.",
+      sections: ["The reference", "Energy"],
       status: "ready",
     },
   ] satisfies Chapter[],
@@ -318,6 +318,12 @@ export const offbeat = {
       ],
       tool:
         "Build and export an approved stepped composition.",
+    },
+    inspiration: {
+      reference:
+        "The main reference for off/beat is shape play inspired by the heritage of India — stepwells, jaalis, patterned brickwork — modernised for the new Indian. It connects to our history and still gives a refreshed identity that looks to the future.",
+      energy:
+        "Energy the brand borrows from — crowds, structures, late hours — always held inside a generator silhouette.",
     },
     howto: [
       { number: "01", title: "Cut the silhouette", note: "Generate a stepped frame in the Shape Generator — one to four cuts, golden-ratio depths.", cut: 0.191, steps: 1 },
@@ -437,6 +443,18 @@ export const offbeat = {
         { name: "Venture capital", src: "/offbeat/media/social/venture-capital.jpg", format: "JPG", orientation: "portrait", alt: "Future of venture capital editorial social design", note: "Editorial", width: 1440, height: 1800 },
       ] satisfies MediaItem[],
     },
+    /**
+     * The primary reference: shape play from Indian heritage architecture.
+     * Owner-supplied research images plus one Wikimedia Commons photograph;
+     * reference material only, never presented as client work.
+     */
+    heritage: [
+      { name: "Stepwell descent", src: "/offbeat/media/inspiration/stepwell-kund.jpg", format: "JPG", orientation: "portrait", alt: "Criss-crossing stepped stairs of Panna Meena ka Kund stepwell in Amber, Jaipur", credit: "Jakub Hałun · Wikimedia Commons · CC BY-SA 4.0", cut: 0.309, steps: 3, width: 997, height: 1500 },
+      { name: "Stepwell geometry", src: "/offbeat/media/inspiration/stepwell-geometry.jpg", format: "JPG", orientation: "portrait", alt: "Sunlit zigzag steps of a sandstone stepwell", credit: "Supplied reference", cut: 0.191, steps: 4, width: 934, height: 1400 },
+      { name: "Stone jaali", src: "/offbeat/media/inspiration/stone-jaali.jpg", format: "JPG", orientation: "portrait", alt: "Carved stone jaali screen with stepped square openings and floral rosettes", credit: "Supplied reference · IndiTales", cut: 0.382, steps: 2, width: 480, height: 640 },
+      { name: "Brick jaali", src: "/offbeat/media/inspiration/brick-jaali.jpg", format: "JPG", orientation: "square", alt: "Red brick jaali wall of repeating stepped cross openings", credit: "Supplied reference", cut: 0.309, steps: 1, width: 576, height: 599 },
+      { name: "Patterned brickwork", src: "/offbeat/media/inspiration/brick-facade.jpg", format: "JPG", orientation: "square", alt: "Polychrome brick facade weaving diamond patterns across a stepped corner", credit: "Supplied reference", cut: 0.191, steps: 2, width: 852, height: 852 },
+    ] satisfies InspirationItem[],
     /**
      * Open-source reference imagery (Unsplash archive via Lorem Picsum).
      * Not client work — shown only inside System and Inspiration as
