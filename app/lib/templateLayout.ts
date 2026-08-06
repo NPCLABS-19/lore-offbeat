@@ -1,16 +1,27 @@
 /**
  * Layout maths for the off/beat template generator.
  *
- * Every measurement descends from φ (1.618). Canvas splits fall on the
- * 61.8 / 38.2 line, margins are the canvas minor axis ÷ φ³, and the type
- * scale steps by φ so headline, subhead, and meta stay in proportion at any
- * ratio. The five templates are structural reductions of the published
- * off/beat social work — see SOURCE_MAP.md for the source posts.
+ * The six templates are structural reductions of the published off/beat social
+ * work, not inventions. Reading that work back:
+ *
+ * - Most posts carry **no stepped shape at all** (Shark Tank, Raj Sharma,
+ *   AI Duplicates, Breaking & Building). The cut belongs to two archetypes:
+ *   the Venture Capital type plates and the Godmode subject frame.
+ * - The ground is usually paper lilac, olive, or a gradient. Signal pink is
+ *   one option among several, not the default.
+ * - The header mark is the bracketed lockup, never a filled plate.
+ * - Huge type running over the image is the signature move.
+ *
+ * Every measurement descends from φ: splits fall on the 61.8 / 38.2 line,
+ * margins are the minor axis × 0.0618, and the type scale steps by φ.
  */
 import { steppedRectPath } from "./steppedShape";
 
 export const PHI = 1.618033988749895;
 export const PHI_INV = 0.618033988749895;
+
+/** Minimum rendered width for the bracket lockup; below this use the patch. */
+export const LOCKUP_MIN_WIDTH = 96;
 
 export type RatioKey = "1:1" | "9:16" | "16:9";
 
@@ -20,25 +31,34 @@ export const RATIOS: Record<RatioKey, { width: number; height: number; use: stri
   "16:9": { width: 1920, height: 1080, use: "Presentation / banner" },
 };
 
-export type TemplateKey = "event" | "typeStack" | "guide" | "announcement" | "product";
+export type TemplateKey = "event" | "plates" | "guide" | "announcement" | "overlap" | "report";
 
-export const TEMPLATES: Record<TemplateKey, { name: string; note: string }> = {
-  event: { name: "Event", note: "Badge, framed subject, headline, meta row" },
-  typeStack: { name: "Type stack", note: "Headline plates filling the canvas" },
-  guide: { name: "Guide cover", note: "Full-bleed image, headline on the golden line" },
-  announcement: { name: "Announcement", note: "Subject bleed with a headline and role" },
-  product: { name: "Product drop", note: "Centred object, header lockup, spec lines" },
+export const TEMPLATES: Record<TemplateKey, { name: string; note: string; shape: boolean }> = {
+  event: { name: "Event", note: "Lockup, framed subject, headline, meta row", shape: true },
+  plates: { name: "Type plates", note: "Headline on stepped plates", shape: true },
+  guide: { name: "Guide cover", note: "Full-bleed image, headline on the golden line", shape: false },
+  announcement: { name: "Announcement", note: "Subject bleed, headline, role", shape: false },
+  overlap: { name: "Type over image", note: "Headline running across the subject", shape: false },
+  report: { name: "Report", note: "Corner annotations, object, headline", shape: false },
 };
 
-export type Colourway = { name: string; ground: string; ink: string; accent: string; accentInk: string };
+export type Colourway = {
+  name: string;
+  ground: string;
+  /** When set, the ground is a vertical gradient from `ground` to `to`. */
+  to?: string;
+  ink: string;
+  accent: string;
+  accentInk: string;
+};
 
 export const COLOURWAYS: Colourway[] = [
+  { name: "Paper lilac", ground: "#D1CDD2", ink: "#3D0A1E", accent: "#FF00B4", accentInk: "#FFFFFF" },
+  { name: "Grey to olive", ground: "#C9C9C9", to: "#A8A400", ink: "#000000", accent: "#A8A400", accentInk: "#000000" },
+  { name: "Cream to pink", ground: "#FFF3E0", to: "#FF3DA6", ink: "#4A0E28", accent: "#FF00B4", accentInk: "#FFFFFF" },
   { name: "Signal pink", ground: "#FF00B4", ink: "#000000", accent: "#000000", accentInk: "#FF00B4" },
+  { name: "White to red", ground: "#FFFFFF", to: "#B23A2E", ink: "#FFFFFF", accent: "#B23A2E", accentInk: "#FFFFFF" },
   { name: "Ink", ground: "#000000", ink: "#FFFFFF", accent: "#FF00B4", accentInk: "#000000" },
-  { name: "Warm cream", ground: "#FFEFE9", ink: "#000000", accent: "#FF00B4", accentInk: "#000000" },
-  { name: "Olive", ground: "#7C8152", ink: "#000000", accent: "#FFEFE9", accentInk: "#000000" },
-  { name: "Sienna", ground: "#B7412E", ink: "#FFEFE9", accent: "#000000", accentInk: "#FFEFE9" },
-  { name: "Soft lilac", ground: "#D1CDD2", ink: "#000000", accent: "#FF00B4", accentInk: "#000000" },
 ];
 
 export type TemplateCopy = {
@@ -51,7 +71,7 @@ export type TemplateCopy = {
 };
 
 export const PLACEHOLDER_COPY: TemplateCopy = {
-  eyebrow: "OFF/BEAT PRESENTS",
+  eyebrow: "PRESENTS",
   headline: "HEADLINE GOES HERE",
   subhead: "One supporting line, sentence case, kept short.",
   metaA: "BRAND LAUNCH",
@@ -64,7 +84,7 @@ export type TemplateOptions = {
   template: TemplateKey;
   colourway: Colourway;
   copy: TemplateCopy;
-  /** Stepped corner cuts on plates and frames; 0 keeps corners square. */
+  /** Stepped corner cuts; 0 keeps corners square. Ignored where shape is false. */
   steps: number;
   cut: number;
   guides: boolean;
@@ -72,21 +92,17 @@ export type TemplateOptions = {
 
 const DISPLAY_FONT = "Archivo, 'Arial Narrow', Helvetica, Arial, sans-serif";
 const VOICE_FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+export const DISPLAY_WIDTH_FACTOR = 0.52;
 
 function esc(value: string) {
   return value.replace(/[<>&"']/g, (character) => {
     const entities: Record<string, string> = {
-      "<": "&lt;",
-      ">": "&gt;",
-      "&": "&amp;",
-      '"': "&quot;",
-      "'": "&apos;",
+      "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;",
     };
     return entities[character];
   });
 }
 
-/** Geometry shared by every template, all derived from φ. */
 export function metrics(ratio: RatioKey) {
   const { width, height } = RATIOS[ratio];
   const minor = Math.min(width, height);
@@ -98,25 +114,17 @@ export function metrics(ratio: RatioKey) {
     height,
     minor,
     margin,
-    /** The dominant 61.8 / 38.2 division. */
+    content: width - margin * 2,
     goldenY: height * PHI_INV,
     goldenX: width * PHI_INV,
     scale: {
-      micro: base * Math.pow(PHI_INV, 1.5),
-      meta: base * PHI_INV,
+      micro: base * 0.62,
+      meta: base * 0.78,
       body: base,
       subhead: base * PHI,
-      display: base * Math.pow(PHI, ratio === "16:9" ? 2.4 : 2.8),
+      display: base * Math.pow(PHI, ratio === "16:9" ? 2.3 : 2.7),
     },
   };
-}
-
-/** A stepped plate, or a plain rect when steps is 0. */
-function plate(x: number, y: number, w: number, h: number, fill: string, steps: number, cut: number) {
-  if (steps <= 0) {
-    return `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}" fill="${fill}"/>`;
-  }
-  return `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})"><path d="${steppedRectPath(w, h, cut, steps)}" fill="${fill}"/></g>`;
 }
 
 function text(
@@ -133,21 +141,18 @@ function text(
   const weight = options.weight ?? 500;
   const anchor = options.anchor ?? "start";
   const tracking = options.tracking ?? 0;
-  // Archivo ships as a variable font: social headlines need the narrow width
-  // axis, the same setting the type tester uses.
+  // Archivo is variable: social headlines use the narrow width axis.
   const variation =
     font === DISPLAY_FONT ? ` style="font-variation-settings:&apos;wdth&apos; 62,&apos;wght&apos; ${weight}"` : "";
 
   return `<text x="${x.toFixed(2)}" y="${y.toFixed(2)}" fill="${fill}" font-family="${font}" font-size="${size.toFixed(2)}" font-weight="${weight}" text-anchor="${anchor}" letter-spacing="${tracking.toFixed(3)}" dominant-baseline="middle"${variation}>${esc(content)}</text>`;
 }
 
-/** Break a value into at most `maxLines` lines, keeping words whole. */
 function wrapToLines(value: string, maxLines: number) {
   const words = value.split(/\s+/).filter(Boolean);
   if (!words.length) return [""];
   if (maxLines <= 1) return [words.join(" ")];
 
-  // Greedy balance: aim for equal character counts across the line count.
   const target = Math.ceil(words.join(" ").length / maxLines);
   const lines: string[] = [];
   let current = "";
@@ -166,357 +171,325 @@ function wrapToLines(value: string, maxLines: number) {
 }
 
 /**
- * Fit a headline to a box.
- *
- * SVG has no text measurement, and the layout must stay deterministic on the
- * server, so glyph width is approximated. Measured against Archivo at the
- * narrow width axis (wdth 62), bold uppercase averages ~0.50em per character;
- * the Arial Narrow fallback sits just under that. The estimate is deliberately
+ * Fit a headline to a box. SVG cannot measure text and the layout must stay
+ * deterministic on the server, so glyph width is approximated: Archivo at
+ * wdth 62, bold uppercase, averages ~0.50em per character. The estimate runs
  * slightly generous so type lands inside the margin rather than on it.
  */
-export const DISPLAY_WIDTH_FACTOR = 0.52;
-
 function fitText(
   value: string,
   maxWidth: number,
   maxHeight: number,
   maxSize: number,
   widthFactor = DISPLAY_WIDTH_FACTOR,
-  lineHeight = 1.04,
+  lineHeight = 1.02,
 ) {
   let best = { lines: [value], size: 0 };
 
-  for (let count = 1; count <= 5; count += 1) {
+  for (let count = 1; count <= 6; count += 1) {
     const lines = wrapToLines(value, count);
     if (lines.length !== count && count > 1) continue;
     const longest = lines.reduce((max, line) => Math.max(max, line.length), 1);
-    const byWidth = maxWidth / (longest * widthFactor);
-    const byHeight = maxHeight / (count * lineHeight);
-    const size = Math.min(maxSize, byWidth, byHeight);
+    const size = Math.min(maxSize, maxWidth / (longest * widthFactor), maxHeight / (count * lineHeight));
     if (size > best.size) best = { lines, size };
   }
 
   return best;
 }
 
-/** Placeholder image well: a tinted field with a cross and a label. */
-function imageWell(
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  options: TemplateOptions,
-  label = "IMAGE",
-) {
-  const { colourway, steps, cut } = options;
-  const clipId = `well-${Math.round(x)}-${Math.round(y)}-${Math.round(w)}`;
-  const line = Math.max(1.5, Math.min(w, h) * 0.006);
-
-  // Outline and clip share one path so the edge always follows the silhouette
-  // rather than a rectangle drawn over it.
-  const outline =
-    steps > 0
-      ? `<path transform="translate(${x.toFixed(2)} ${y.toFixed(2)})" d="${steppedRectPath(w, h, cut, steps)}"`
-      : `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}"`;
-
-  const fill = `${outline} fill="${colourway.ink}" opacity="0.2"/>`;
-  const stroke = `${outline} fill="none" stroke="${colourway.ink}" stroke-width="${line}" opacity="0.5"/>`;
-  const cross =
-    `<defs><clipPath id="${clipId}">${outline} /></clipPath></defs>` +
-    `<g clip-path="url(#${clipId})"><path d="M${x.toFixed(2)} ${y.toFixed(2)} L${(x + w).toFixed(2)} ${(y + h).toFixed(2)} M${(x + w).toFixed(2)} ${y.toFixed(2)} L${x.toFixed(2)} ${(y + h).toFixed(2)}" stroke="${colourway.ink}" stroke-width="${line}" opacity="0.34"/></g>`;
-
+/** Vertical gradient ground, or a flat fill. */
+function ground(m: ReturnType<typeof metrics>, c: Colourway) {
+  if (!c.to) return `<rect width="${m.width}" height="${m.height}" fill="${c.ground}"/>`;
   return (
-    fill +
-    cross +
-    stroke +
-    text(x + w / 2, y + h / 2, label, Math.max(11, Math.min(w, h) * 0.055), colourway.ink, {
-      anchor: "middle",
-      weight: 700,
-      tracking: Math.min(w, h) * 0.005,
-      upper: true,
-    })
+    `<defs><linearGradient id="tg-ground" x1="0" y1="0" x2="0" y2="1">` +
+    `<stop offset="0" stop-color="${c.ground}"/><stop offset="1" stop-color="${c.to}"/></linearGradient></defs>` +
+    `<rect width="${m.width}" height="${m.height}" fill="url(#tg-ground)"/>`
   );
 }
 
-/** Small corner annotations — the micro detail that carries the brand. */
-function cornerMarks(m: ReturnType<typeof metrics>, c: Colourway, copy: TemplateCopy) {
-  const size = m.scale.micro;
+/** One stepped bracket, drawn from the mark's own geometry. */
+function bracket(x: number, y: number, w: number, h: number, fill: string, flip = false) {
+  const path =
+    `M0 0 L${w} 0 L${w} ${h * 0.16} L${w * 0.52} ${h * 0.16} L${w * 0.52} ${h * 0.34} ` +
+    `L${w * 0.26} ${h * 0.34} L${w * 0.26} ${h * 0.66} L${w * 0.52} ${h * 0.66} ` +
+    `L${w * 0.52} ${h * 0.84} L${w} ${h * 0.84} L${w} ${h} L0 ${h} Z`;
+  const transform = flip
+    ? `translate(${(x + w).toFixed(2)} ${y.toFixed(2)}) scale(-1 1)`
+    : `translate(${x.toFixed(2)} ${y.toFixed(2)})`;
+  return `<g transform="${transform}"><path d="${path}" fill="${fill}"/></g>`;
+}
+
+/** The stepped slash patch — the alternate mark for small sizes. */
+function slashPatch(cx: number, cy: number, size: number, c: Colourway) {
+  const x = cx - size / 2;
+  const y = cy - size / 2;
+  const s = size;
   return (
-    text(m.margin, m.margin * 0.72, copy.metaA, size, c.ink, { weight: 700, tracking: size * 0.16, upper: true }) +
-    text(m.width - m.margin, m.margin * 0.72, copy.metaB, size, c.ink, {
-      anchor: "end",
-      weight: 700,
-      tracking: size * 0.16,
-      upper: true,
-    })
+    `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">` +
+    `<path d="${steppedRectPath(s, s, 0.22, 2)}" fill="${c.accent}"/>` +
+    `<path d="M${s * 0.62} ${s * 0.2} L${s * 0.76} ${s * 0.2} L${s * 0.4} ${s * 0.8} L${s * 0.26} ${s * 0.8} Z" fill="${c.accentInk}"/>` +
+    `</g>`
   );
 }
 
-/** The bracketed OFF/BEAT lockup, drawn from the stepped system. */
-function lockup(cx: number, cy: number, width: number, options: TemplateOptions) {
-  const { colourway, steps, cut } = options;
-  const height = width * 0.28;
+/**
+ * The header mark. Below the minimum rendered width the bracket lockup loses
+ * its steps, so the alternate patch is used instead — never a shrunken lockup.
+ */
+function headerMark(cx: number, cy: number, width: number, c: Colourway) {
+  if (width < LOCKUP_MIN_WIDTH) return slashPatch(cx, cy, LOCKUP_MIN_WIDTH * 0.5, c);
+
+  const h = width * 0.22;
+  const bw = width * 0.11;
   const x = cx - width / 2;
-  const y = cy - height / 2;
+  const y = cy - h / 2;
+
   return (
-    plate(x, y, width, height, colourway.accent, Math.max(1, Math.min(steps, 2)), cut || 0.191) +
-    text(cx, cy, "OFF/BEAT", height * 0.46, colourway.accentInk, {
-      anchor: "middle",
-      weight: 800,
-      tracking: -height * 0.01,
+    bracket(x, y, bw, h, c.accent) +
+    bracket(x + width - bw, y, bw, h, c.accent, true) +
+    text(cx, cy, "OFF/BEAT", h * 0.62, c.accent, { anchor: "middle", weight: 800, tracking: -h * 0.012 })
+  );
+}
+
+/** Placeholder image well: tinted field, cross, and label. */
+function imageWell(
+  x: number, y: number, w: number, h: number, o: TemplateOptions, label = "IMAGE", stepped = false,
+) {
+  const c = o.colourway;
+  const line = Math.max(1.5, Math.min(w, h) * 0.006);
+  const use = stepped && o.steps > 0;
+  const outline = use
+    ? `<path transform="translate(${x.toFixed(2)} ${y.toFixed(2)})" d="${steppedRectPath(w, h, o.cut, o.steps)}"`
+    : `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${w.toFixed(2)}" height="${h.toFixed(2)}"`;
+  const clipId = `w${Math.round(x)}-${Math.round(y)}-${Math.round(w)}`;
+
+  return (
+    `${outline} fill="${c.ink}" opacity="0.18"/>` +
+    `<defs><clipPath id="${clipId}">${outline} /></clipPath></defs>` +
+    `<g clip-path="url(#${clipId})"><path d="M${x.toFixed(2)} ${y.toFixed(2)} L${(x + w).toFixed(2)} ${(y + h).toFixed(2)} M${(x + w).toFixed(2)} ${y.toFixed(2)} L${x.toFixed(2)} ${(y + h).toFixed(2)}" stroke="${c.ink}" stroke-width="${line}" opacity="0.3"/></g>` +
+    `${outline} fill="none" stroke="${c.ink}" stroke-width="${line}" opacity="0.45"/>` +
+    text(x + w / 2, y + h / 2, label, Math.max(11, Math.min(w, h) * 0.05), c.ink, {
+      anchor: "middle", weight: 700, tracking: Math.min(w, h) * 0.005, upper: true,
     })
+  );
+}
+
+/** Two-line corner annotation, as used across the report and event work. */
+function annotation(x: number, y: number, line1: string, line2: string, size: number, c: Colourway, end = false) {
+  const anchor = end ? "end" : "start";
+  return (
+    text(x, y, line1, size, c.ink, { anchor, weight: 700, tracking: size * 0.06, upper: true }) +
+    text(x, y + size * 1.25, line2, size, c.ink, { anchor, weight: 700, tracking: size * 0.06, upper: true })
   );
 }
 
 function goldenGuides(m: ReturnType<typeof metrics>) {
-  const stroke = `stroke="#00E5FF" stroke-width="${Math.max(1, m.minor * 0.0015)}" stroke-dasharray="${m.minor * 0.012} ${m.minor * 0.008}" opacity="0.85"`;
+  const s = `stroke="#00E5FF" stroke-width="${Math.max(1, m.minor * 0.0015)}" stroke-dasharray="${m.minor * 0.012} ${m.minor * 0.008}" opacity="0.85"`;
   return (
-    `<line x1="0" y1="${m.goldenY.toFixed(2)}" x2="${m.width}" y2="${m.goldenY.toFixed(2)}" ${stroke}/>` +
-    `<line x1="0" y1="${(m.height - m.goldenY).toFixed(2)}" x2="${m.width}" y2="${(m.height - m.goldenY).toFixed(2)}" ${stroke}/>` +
-    `<line x1="${m.goldenX.toFixed(2)}" y1="0" x2="${m.goldenX.toFixed(2)}" y2="${m.height}" ${stroke}/>` +
-    `<line x1="${(m.width - m.goldenX).toFixed(2)}" y1="0" x2="${(m.width - m.goldenX).toFixed(2)}" y2="${m.height}" ${stroke}/>` +
-    `<rect x="${m.margin.toFixed(2)}" y="${m.margin.toFixed(2)}" width="${(m.width - m.margin * 2).toFixed(2)}" height="${(m.height - m.margin * 2).toFixed(2)}" fill="none" ${stroke}/>`
+    `<line x1="0" y1="${m.goldenY.toFixed(2)}" x2="${m.width}" y2="${m.goldenY.toFixed(2)}" ${s}/>` +
+    `<line x1="0" y1="${(m.height - m.goldenY).toFixed(2)}" x2="${m.width}" y2="${(m.height - m.goldenY).toFixed(2)}" ${s}/>` +
+    `<line x1="${m.goldenX.toFixed(2)}" y1="0" x2="${m.goldenX.toFixed(2)}" y2="${m.height}" ${s}/>` +
+    `<rect x="${m.margin.toFixed(2)}" y="${m.margin.toFixed(2)}" width="${(m.width - m.margin * 2).toFixed(2)}" height="${(m.height - m.margin * 2).toFixed(2)}" fill="none" ${s}/>`
   );
 }
 
+/* -------------------------------------------------------------------------
+   Templates
+   ------------------------------------------------------------------------- */
+
+/** Godmode: lockup, PRESENTS, framed subject, headline, three-column footer. */
 function buildEvent(o: TemplateOptions) {
   const m = metrics(o.ratio);
   const c = o.colourway;
-  const content = m.width - m.margin * 2;
+  const lockupW = Math.min(m.content * 0.4, m.width * 0.34);
+  const lockupY = m.margin + lockupW * 0.13;
+  const eyebrowY = lockupY + lockupW * 0.2;
+  const footerY = m.height - m.margin - m.scale.meta * 0.6;
+  const subY = footerY - m.scale.meta * 2.6;
 
-  // Zones: header, then the image well down to the golden line, then type.
-  const lockupWidth = Math.min(content * 0.42, m.width * 0.36);
-  const lockupY = m.margin + lockupWidth * 0.15;
-  const eyebrowY = lockupY + lockupWidth * 0.22;
+  const head = fitText(o.copy.headline, m.content, m.height * 0.2, m.scale.display);
+  const headBlock = head.lines.length * head.size * 1.02;
+  const headTop = subY - m.scale.meta * 1.8 - headBlock;
+
   const wellTop = eyebrowY + m.scale.meta * 2;
-
-  const footerY = m.height - m.margin;
-  const subY = footerY - m.scale.meta * 2.4;
-  const typeTop = wellTop + (m.goldenY - wellTop) + m.margin * 0.6;
-  const headBudget = subY - m.scale.subhead * 1.2 - typeTop;
-
-  const head = fitText(o.copy.headline, content, Math.max(headBudget, m.scale.display), m.scale.display);
-  const headBlock = head.lines.length * head.size * 1.04;
-  const headTop = subY - m.scale.meta * 1.6 - headBlock;
-
-  // The framed subject reads as a window, so keep it from going letterbox-wide.
-  const wellBottom = Math.max(m.goldenY, headTop - m.margin * 0.6);
-  const wellH = Math.max(wellBottom - wellTop, m.minor * 0.22);
-  const wellW = Math.min(content, wellH * 1.15);
-  const wellX = (m.width - wellW) / 2;
+  const wellH = Math.max(headTop - m.margin * 0.5 - wellTop, m.minor * 0.2);
+  const wellW = Math.min(m.content, wellH * 1.1);
 
   return (
-    lockup(m.width / 2, lockupY, lockupWidth, o) +
+    headerMark(m.width / 2, lockupY, lockupW, c) +
     text(m.width / 2, eyebrowY, o.copy.eyebrow, m.scale.meta, c.ink, {
-      anchor: "middle",
-      weight: 700,
-      tracking: m.scale.meta * 0.14,
-      upper: true,
+      anchor: "middle", weight: 700, tracking: m.scale.meta * 0.16, upper: true,
     }) +
-    imageWell(wellX, wellTop, wellW, wellH, o, "SUBJECT") +
-    head.lines
-      .map((line, index) =>
-        text(m.width / 2, headTop + head.size * 0.62 + index * head.size * 1.04, line, head.size, c.ink, {
-          anchor: "middle",
-          font: DISPLAY_FONT,
-          weight: 800,
-          tracking: -head.size * 0.015,
-          upper: true,
-        }),
-      )
-      .join("") +
+    imageWell((m.width - wellW) / 2, wellTop, wellW, wellH, o, "SUBJECT", true) +
+    head.lines.map((line, i) =>
+      text(m.width / 2, headTop + head.size * 0.6 + i * head.size * 1.02, line, head.size, c.ink, {
+        anchor: "middle", font: DISPLAY_FONT, weight: 800, tracking: -head.size * 0.015, upper: true,
+      })).join("") +
     text(m.width / 2, subY, o.copy.subhead, m.scale.meta, c.ink, { anchor: "middle", weight: 500 }) +
-    text(m.margin, footerY - m.scale.meta * 0.4, o.copy.metaA, m.scale.meta, c.ink, {
-      weight: 700,
-      tracking: m.scale.meta * 0.1,
-      upper: true,
-    }) +
-    text(m.width / 2, footerY - m.scale.meta * 0.4, o.copy.metaB, m.scale.meta, c.ink, {
-      anchor: "middle",
-      weight: 700,
-      tracking: m.scale.meta * 0.1,
-      upper: true,
-    }) +
-    text(m.width - m.margin, footerY - m.scale.meta * 0.4, o.copy.metaC, m.scale.meta, c.ink, {
-      anchor: "end",
-      weight: 700,
-      tracking: m.scale.meta * 0.1,
-      upper: true,
-    })
+    text(m.margin, footerY, o.copy.metaA, m.scale.meta, c.ink, { weight: 700, tracking: m.scale.meta * 0.1, upper: true }) +
+    text(m.width / 2, footerY, o.copy.metaB, m.scale.meta, c.ink, { anchor: "middle", weight: 700, tracking: m.scale.meta * 0.1, upper: true }) +
+    text(m.width - m.margin, footerY, o.copy.metaC, m.scale.meta, c.ink, { anchor: "end", weight: 700, tracking: m.scale.meta * 0.1, upper: true })
   );
 }
 
-function buildTypeStack(o: TemplateOptions) {
+/** Venture Capital: headline set on stepped plates, side meta on the golden line. */
+function buildPlates(o: TemplateOptions) {
   const m = metrics(o.ratio);
   const c = o.colourway;
-  const content = m.width - m.margin * 2;
-  const top = m.margin + m.scale.micro * 2.4;
-  const bottom = m.height - m.margin - m.scale.meta * 2;
-  // Plates carry inset padding, so fit the type to the inner width.
-  const inset = content * 0.045;
-  const head = fitText(o.copy.headline, content - inset * 2, bottom - top, m.width * 0.17);
-  const lineH = head.size * 1.22;
+  const top = m.margin + m.scale.micro * 2;
+  const bottom = m.height - m.margin - m.scale.meta * 2.4;
+  const inset = m.content * 0.04;
+  const head = fitText(o.copy.headline, m.content - inset * 2, bottom - top, m.width * 0.16);
+  const lineH = head.size * 1.2;
   const blockTop = top + (bottom - top - lineH * head.lines.length) / 2;
 
-  const stack = head.lines
-    .map((line, index) => {
-      const y = blockTop + index * lineH;
-      // Plate carries headroom over the fitting estimate so type never breaches it.
-      const w = Math.min(content, line.length * head.size * (DISPLAY_WIDTH_FACTOR + 0.06) + inset * 2);
-      return (
-        plate(m.margin, y, w, lineH * 0.88, c.accent, o.steps, o.cut) +
-        text(m.margin + inset, y + lineH * 0.44, line, head.size, c.accentInk, {
-          font: DISPLAY_FONT,
-          weight: 800,
-          tracking: -head.size * 0.02,
-          upper: true,
-        })
-      );
-    })
-    .join("");
+  const stack = head.lines.map((line, i) => {
+    const y = blockTop + i * lineH;
+    const w = Math.min(m.content, line.length * head.size * (DISPLAY_WIDTH_FACTOR + 0.06) + inset * 2);
+    // Plates alternate their edge so the stack reads as one ragged column.
+    const x = i % 2 === 0 ? m.margin : Math.max(m.margin, m.width - m.margin - w);
+    return (
+      `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})"><path d="${steppedRectPath(w, lineH * 0.9, o.cut, Math.max(o.steps, 1))}" fill="${c.accent}"/></g>` +
+      text(x + inset, y + lineH * 0.45, line, head.size, c.accentInk, {
+        font: DISPLAY_FONT, weight: 800, tracking: -head.size * 0.02, upper: true,
+      })
+    );
+  }).join("");
 
+  // Meta sits in the corners: the plate stack is ragged, so a mid-height
+  // side note would collide with whichever line runs long.
   return (
-    cornerMarks(m, c, o.copy) +
+    text(m.margin, m.margin + m.scale.micro, o.copy.metaA, m.scale.micro, c.ink, {
+      weight: 700, tracking: m.scale.micro * 0.12, upper: true,
+    }) +
+    text(m.width - m.margin, m.margin + m.scale.micro, o.copy.metaB, m.scale.micro, c.ink, {
+      anchor: "end", weight: 700, tracking: m.scale.micro * 0.12, upper: true,
+    }) +
     stack +
     text(m.width / 2, m.height - m.margin, o.copy.metaC, m.scale.meta, c.ink, {
-      anchor: "middle",
-      weight: 700,
-      tracking: m.scale.meta * 0.14,
-      upper: true,
+      anchor: "middle", weight: 700, tracking: m.scale.meta * 0.14, upper: true,
     })
   );
 }
 
+/** Shark Tank: full-bleed image, wash, eyebrow and headline on the lower zone. */
 function buildGuide(o: TemplateOptions) {
   const m = metrics(o.ratio);
   const c = o.colourway;
-  const content = m.width - m.margin * 2;
-  // Type occupies the lower 38.2%; the wash starts a little above it.
-  const typeZone = m.height - m.goldenY;
-  const head = fitText(o.copy.headline, content, typeZone * 0.62, m.scale.display * 0.78);
-  const blockH = head.lines.length * head.size * 1.04;
+  const head = fitText(o.copy.headline, m.content, (m.height - m.goldenY) * 0.6, m.scale.display * 0.82);
+  const blockH = head.lines.length * head.size * 1.02;
   const headTop = m.height - m.margin - blockH;
 
   return (
-    imageWell(0, 0, m.width, m.height, { ...o, steps: 0 }, "FULL BLEED IMAGE") +
-    `<rect x="0" y="${(m.goldenY * 0.82).toFixed(2)}" width="${m.width}" height="${(m.height - m.goldenY * 0.82).toFixed(2)}" fill="${c.ground}" opacity="0.75"/>` +
-    text(m.margin, headTop - m.scale.meta * 1.6, o.copy.eyebrow, m.scale.meta, c.ink, {
-      weight: 700,
-      tracking: m.scale.meta * 0.16,
-      upper: true,
+    imageWell(0, 0, m.width, m.height, o, "FULL BLEED IMAGE") +
+    `<defs><linearGradient id="tg-wash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.to ?? c.ground}" stop-opacity="0"/><stop offset="0.55" stop-color="${c.to ?? c.ground}" stop-opacity="0.9"/></linearGradient></defs>` +
+    `<rect x="0" y="${(m.goldenY * 0.6).toFixed(2)}" width="${m.width}" height="${(m.height - m.goldenY * 0.6).toFixed(2)}" fill="url(#tg-wash)"/>` +
+    text(m.margin, headTop - m.scale.meta * 1.8, o.copy.eyebrow, m.scale.meta, c.ink, {
+      weight: 700, tracking: m.scale.meta * 0.18, upper: true,
     }) +
-    head.lines
-      .map((line, index) =>
-        text(m.margin, headTop + head.size * 0.62 + index * head.size * 1.04, line, head.size, c.ink, {
-          font: DISPLAY_FONT,
-          weight: 800,
-          tracking: -head.size * 0.015,
-          upper: true,
-        }),
-      )
-      .join("")
+    head.lines.map((line, i) =>
+      text(m.margin, headTop + head.size * 0.6 + i * head.size * 1.02, line, head.size, c.ink, {
+        font: DISPLAY_FONT, weight: 800, tracking: -head.size * 0.015, upper: true,
+      })).join("")
   );
 }
 
+/** Raj Sharma: subject bleeds the frame, headline and role sit over the wash. */
 function buildAnnouncement(o: TemplateOptions) {
   const m = metrics(o.ratio);
   const c = o.colourway;
-  const vertical = o.ratio !== "16:9";
-  const wellW = vertical ? m.width : m.goldenX;
-  const wellH = vertical ? m.goldenY : m.height;
-  const textX = vertical ? m.margin : m.goldenX + m.margin;
-  const textW = (vertical ? m.width : m.width - m.goldenX) - m.margin * 2;
-  const zoneTop = vertical ? m.goldenY : 0;
-  const zoneH = vertical ? m.height - m.goldenY : m.height;
-  const lockupW = Math.min(textW * 0.5, m.width * 0.2);
-
-  const head = fitText(o.copy.headline, textW, zoneH * 0.4, m.scale.display * 0.66);
-  const blockH = head.lines.length * head.size * 1.04;
-  const lockupH = lockupW * 0.28;
-  // Reserve the lockup's own height plus a gap so it never sits on the type.
-  const group = lockupH * 1.9 + blockH + m.scale.meta * 2.2;
-  const blockTop = zoneTop + Math.max((zoneH - group) / 2, m.margin * 0.5) + lockupH * 1.9;
+  const head = fitText(o.copy.headline, m.content, m.height * 0.2, m.scale.display * 0.9);
+  const blockH = head.lines.length * head.size * 1.02;
+  const subY = m.height - m.margin - m.scale.meta * 1.2;
+  const headTop = subY - m.scale.meta * 2.2 - blockH;
 
   return (
-    imageWell(0, 0, wellW, wellH, { ...o, steps: 0 }, "SUBJECT") +
-    (vertical
-      ? `<rect x="0" y="${m.goldenY.toFixed(2)}" width="${m.width}" height="${(m.height - m.goldenY).toFixed(2)}" fill="${c.ground}"/>`
-      : `<rect x="${m.goldenX.toFixed(2)}" y="0" width="${(m.width - m.goldenX).toFixed(2)}" height="${m.height}" fill="${c.ground}"/>`) +
-    lockup(textX + lockupW / 2, blockTop - lockupH * 1.15, lockupW, o) +
-    head.lines
-      .map((line, index) =>
-        text(textX, blockTop + head.size * 0.62 + index * head.size * 1.04, line, head.size, c.ink, {
-          font: DISPLAY_FONT,
-          weight: 800,
-          tracking: -head.size * 0.015,
-          upper: true,
-        }),
-      )
-      .join("") +
-    text(textX, blockTop + blockH + m.scale.meta * 1.2, o.copy.subhead, m.scale.meta, c.ink, { weight: 500 })
+    imageWell(0, 0, m.width, m.height, o, "SUBJECT") +
+    `<defs><linearGradient id="tg-wash2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.to ?? c.ground}" stop-opacity="0"/><stop offset="0.6" stop-color="${c.to ?? c.ground}" stop-opacity="0.92"/></linearGradient></defs>` +
+    `<rect x="0" y="${(m.height * 0.45).toFixed(2)}" width="${m.width}" height="${(m.height * 0.55).toFixed(2)}" fill="url(#tg-wash2)"/>` +
+    head.lines.map((line, i) =>
+      text(m.width / 2, headTop + head.size * 0.6 + i * head.size * 1.02, line, head.size, c.ink, {
+        anchor: "middle", font: DISPLAY_FONT, weight: 800, tracking: -head.size * 0.015, upper: true,
+      })).join("") +
+    text(m.width / 2, subY, o.copy.subhead, m.scale.meta, c.ink, { anchor: "middle", weight: 700, upper: true })
   );
 }
 
-function buildProduct(o: TemplateOptions) {
+/** Breaking & Building: headline splits above and below a bleeding subject. */
+function buildOverlap(o: TemplateOptions) {
   const m = metrics(o.ratio);
   const c = o.colourway;
-  const content = m.width - m.margin * 2;
-  const lockupWidth = m.width * 0.3;
-  const lockupY = m.margin + lockupWidth * 0.18;
-  const nameY = lockupY + lockupWidth * 0.24;
-  // The product name is copy, so it has to fit like any other headline.
-  const name = fitText(o.copy.headline, content, m.scale.subhead * 2.6, m.scale.subhead, 0.6);
-  const nameBlock = name.lines.length * name.size * 1.06;
-  const subY = nameY + nameBlock + m.scale.meta * 0.6;
-  const wellY = subY + m.scale.meta * 1.6;
-  const wellSize = Math.min(content, Math.max(m.height - wellY - m.margin * 2.2, m.minor * 0.25));
+  // The archetype is type above *and* below the subject, so a headline that
+  // would fit on one line is forced to break.
+  let all = fitText(o.copy.headline, m.content, m.height * 0.42, m.scale.display * 0.95);
+  if (all.lines.length < 2) {
+    const lines = wrapToLines(o.copy.headline, 2);
+    const longest = lines.reduce((max, line) => Math.max(max, line.length), 1);
+    all = { lines, size: Math.min(m.scale.display * 0.95, m.content / (longest * DISPLAY_WIDTH_FACTOR)) };
+  }
+  const split = Math.ceil(all.lines.length / 2);
+  const topLines = all.lines.slice(0, split);
+  const bottomLines = all.lines.slice(split);
+  const size = all.size;
+  const wellW = m.content * 0.62;
 
   return (
-    text(m.margin, lockupY, o.copy.metaA, m.scale.micro, c.ink, {
-      weight: 700,
-      tracking: m.scale.micro * 0.18,
-      upper: true,
-    }) +
-    text(m.width - m.margin, lockupY, o.copy.metaB, m.scale.micro, c.ink, {
-      anchor: "end",
-      weight: 700,
-      tracking: m.scale.micro * 0.18,
-      upper: true,
-    }) +
-    lockup(m.width / 2, lockupY, lockupWidth, o) +
-    name.lines
-      .map((line, index) =>
-        text(m.width / 2, nameY + index * name.size * 1.06, line, name.size, c.accent, {
-          anchor: "middle",
-          weight: 800,
-          tracking: name.size * 0.02,
-          upper: true,
-        }),
-      )
-      .join("") +
-    text(m.width / 2, subY, o.copy.subhead, m.scale.meta, c.accent, { anchor: "middle", weight: 700 }) +
-    imageWell((m.width - wellSize) / 2, wellY, wellSize, wellSize, o, "OBJECT") +
-    text(m.width / 2, m.height - m.margin, o.copy.metaC, m.scale.meta, c.ink, {
-      anchor: "middle",
-      weight: 700,
-      tracking: m.scale.meta * 0.14,
-      upper: true,
-    })
+    // Type sits behind the subject at the top and in front of it at the bottom.
+    topLines.map((line, i) =>
+      text(m.width / 2, m.margin + size * 0.6 + i * size * 1.02, line, size, c.ink, {
+        anchor: "middle", font: DISPLAY_FONT, weight: 800, tracking: -size * 0.015, upper: true,
+      })).join("") +
+    imageWell((m.width - wellW) / 2, m.height * 0.18, wellW, m.height * 0.7, o, "SUBJECT") +
+    bottomLines.map((line, i) =>
+      text(m.width / 2, m.height - m.margin - (bottomLines.length - 1 - i) * size * 1.02 - size * 0.4, line, size, c.ink, {
+        anchor: "middle", font: DISPLAY_FONT, weight: 800, tracking: -size * 0.015, upper: true,
+      })).join("") +
+    annotation(m.margin, m.goldenY, o.copy.metaA, o.copy.metaB, m.scale.meta, c) +
+    text(m.width - m.margin, m.goldenY, o.copy.metaC, m.scale.meta, c.ink, { anchor: "end", weight: 700, upper: true })
+  );
+}
+
+/** Men's Grooming: corner annotations, floating object, headline along the base. */
+function buildReport(o: TemplateOptions) {
+  const m = metrics(o.ratio);
+  const c = o.colourway;
+  const head = fitText(o.copy.headline, m.content, m.height * 0.26, m.scale.display * 0.88);
+  const blockH = head.lines.length * head.size * 1.02;
+  const headTop = m.height - m.margin - blockH;
+  const wellTop = m.margin + m.scale.micro * 4;
+  const wellH = Math.max(headTop - m.scale.meta * 3 - wellTop, m.minor * 0.2);
+  const wellW = Math.min(m.content * 0.66, wellH);
+
+  return (
+    annotation(m.margin, m.margin + m.scale.micro, o.copy.metaA, o.copy.metaB, m.scale.micro, c) +
+    annotation(m.width - m.margin, m.margin + m.scale.micro, o.copy.eyebrow, o.copy.metaC, m.scale.micro, c, true) +
+    imageWell((m.width - wellW) / 2, wellTop, wellW, wellH, o, "OBJECT") +
+    text(m.margin, m.goldenY, o.copy.metaA, m.scale.meta, c.ink, { weight: 700, upper: true }) +
+    text(m.width - m.margin, m.goldenY, o.copy.metaC, m.scale.meta, c.ink, { anchor: "end", weight: 700, upper: true }) +
+    head.lines.map((line, i) =>
+      text(m.margin, headTop + head.size * 0.6 + i * head.size * 1.02, line, head.size, c.ink, {
+        font: DISPLAY_FONT, weight: 800, tracking: -head.size * 0.015, upper: true,
+      })).join("")
   );
 }
 
 const BUILDERS: Record<TemplateKey, (options: TemplateOptions) => string> = {
   event: buildEvent,
-  typeStack: buildTypeStack,
+  plates: buildPlates,
   guide: buildGuide,
   announcement: buildAnnouncement,
-  product: buildProduct,
+  overlap: buildOverlap,
+  report: buildReport,
 };
 
 export function buildTemplateSvg(options: TemplateOptions) {
   const m = metrics(options.ratio);
-  const body = BUILDERS[options.template](options);
+  // Templates that are not shape-led always render square corners.
+  const resolved: TemplateOptions = TEMPLATES[options.template].shape
+    ? options
+    : { ...options, steps: 0, cut: 0 };
+  const body = BUILDERS[options.template](resolved);
   const guides = options.guides ? goldenGuides(m) : "";
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${m.width} ${m.height}" width="${m.width}" height="${m.height}" role="img" aria-label="Off/Beat ${TEMPLATES[options.template].name} template, ${options.ratio}"><rect width="${m.width}" height="${m.height}" fill="${options.colourway.ground}"/>${body}${guides}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${m.width} ${m.height}" width="${m.width}" height="${m.height}" role="img" aria-label="Off/Beat ${TEMPLATES[options.template].name} template, ${options.ratio}">${ground(m, options.colourway)}${body}${guides}</svg>`;
 }

@@ -50,6 +50,7 @@ export function TemplateGenerator({
   const [guides, setGuides] = useState(true);
   const [status, setStatus] = useState("Placeholder copy is editable. Exports use the full canvas size.");
 
+  const usesShape = TEMPLATES[template].shape;
   const { steps, cut } = CUT_PRESETS[preset];
   const svg = useMemo(
     () => buildTemplateSvg({ ratio, template, colourway, copy, steps, cut, guides }),
@@ -113,7 +114,7 @@ export function TemplateGenerator({
         </fieldset>
 
         <fieldset className="tg-group">
-          <legend>Template</legend>
+          <legend>Template <span className="tg-legend-note">◧ uses the cut</span></legend>
           <div className="tg-stack">
             {(Object.keys(TEMPLATES) as TemplateKey[]).map((key) => (
               <button
@@ -123,7 +124,7 @@ export function TemplateGenerator({
                 aria-pressed={template === key}
                 onClick={() => setTemplate(key)}
               >
-                <strong>{TEMPLATES[key].name}</strong>
+                <strong>{TEMPLATES[key].name}{TEMPLATES[key].shape ? " ◧" : ""}</strong>
                 <span>{TEMPLATES[key].note}</span>
               </button>
             ))}
@@ -151,21 +152,23 @@ export function TemplateGenerator({
           <p className="tg-hint">{colourway.name}</p>
         </fieldset>
 
-        <fieldset className="tg-group">
+        <fieldset className="tg-group" disabled={!usesShape}>
           <legend>Corner cut</legend>
           <div className="tg-chips">
             {CUT_PRESETS.map((option, index) => (
-              <button key={option.label} type="button" className="tg-chip" aria-pressed={preset === index} onClick={() => setPreset(index)}>
+              <button key={option.label} type="button" className="tg-chip" aria-pressed={usesShape && preset === index} onClick={() => setPreset(index)}>
                 {option.label}
               </button>
             ))}
           </div>
           <p className="tg-hint">
-            {steps === 2
-              ? "Two steps is the iconic cut — billboards, banners, and environmental takeovers only."
-              : steps === 0
-                ? "Square corners suit small formats and interface work."
-                : "Free to experiment, as long as the corners have room to read."}
+            {!usesShape
+              ? "This layout carries no stepped shape — most off/beat work does not. Colour and type do the work."
+              : steps === 2
+                ? "Two steps is the iconic cut — billboards, banners, and environmental takeovers only."
+                : steps === 0
+                  ? "Square corners suit small formats and interface work."
+                  : "Free to experiment, as long as the corners have room to read."}
           </p>
         </fieldset>
 
@@ -365,6 +368,9 @@ const componentStyles = `
   .tg-reset { margin-top: 10px; }
 
   .tg-hint, .tg-status { margin: 8px 0 0; color: var(--tg-muted); font-size: 9px; line-height: 1.45; }
+  .tg-legend-note { float: right; font-weight: 700; opacity: 0.75; }
+  .tg-group[disabled] { opacity: 0.45; }
+  .tg-group[disabled] .tg-chip { cursor: not-allowed; }
 
   .tg-actions { border-top: 1px solid var(--tg-line); padding-top: 16px; }
 
