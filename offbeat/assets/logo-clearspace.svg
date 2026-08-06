@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 938.27 524.32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ff00b7;
+      }
+
+      .cls-2 {
+        fill: #46002a;
+        stroke: #46002a;
+        stroke-width: .57px;
+      }
+
+      .cls-2, .cls-3 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-4 {
+        fill: #a4c6e9;
+        font-family: NHaasGroteskDSPro-55Rg, 'Neue Haas Grotesk Display Pro';
+        font-size: 27.27px;
+      }
+
+      .cls-5 {
+        fill: #fff1f4;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #a4c6e9;
+        stroke-width: .5px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <rect class="cls-5" x="3.6" y=".82" width="932" height="523"/>
+    <polygon class="cls-1" points="625.17 233.83 625.17 219.78 625.17 219.78 625.17 219.7 608.73 219.7 608.73 205.75 331.58 205.75 331.58 219.73 315.08 219.73 315.08 233.81 298.7 233.81 298.7 278.35 298.8 278.35 298.8 278.29 315.25 278.29 315.25 292.38 315.08 292.38 315.08 292.38 315.25 292.38 315.25 292.43 331.68 292.43 331.68 305.99 608.7 305.99 608.7 292.4 625.14 292.4 625.14 292.4 625.2 292.4 625.2 278.32 641.46 278.32 641.46 233.83 625.17 233.83"/>
+    <g>
+      <path class="cls-2" d="M333.76,255.9c0-12.19,7.79-21.25,20.05-21.25s19.99,9.06,19.99,21.25-7.73,21.2-19.99,21.2-20.05-9-20.05-21.2ZM365.2,255.9c0-8.15-3.72-14.47-11.33-14.47s-11.51,6.32-11.51,14.47,3.89,14.42,11.51,14.42,11.33-6.32,11.33-14.42Z"/>
+      <path class="cls-2" d="M378.39,235.44h29.75v7.01h-21.33v9.8h18.07v7.07h-18.07v16.87h-8.43v-40.74Z"/>
+      <path class="cls-2" d="M412.9,235.44h29.75v7.01h-21.33v9.8h18.07v7.07h-18.07v16.87h-8.43v-40.74Z"/>
+      <path class="cls-2" d="M457.47,235.44h6.28l-16.27,40.74h-6.28l16.27-40.74Z"/>
+      <path class="cls-2" d="M467.7,235.44h18.59c4.47,0,7.9,1.08,10.05,2.96,2.27,1.99,3.31,4.44,3.31,7.64,0,4.16-2.61,6.84-6.51,8.15v.17c4.59,1.31,7.73,5.07,7.73,10.09,0,3.82-1.22,6.44-3.66,8.49-2.38,2.05-6.04,3.25-10.46,3.25h-19.06v-40.74ZM485.25,251.85c3.66,0,6.16-1.71,6.16-4.9,0-3.02-2.27-4.79-5.99-4.79h-9.3v9.69h9.12ZM476.13,269.35h9.7c4.07,0,6.51-2.22,6.51-5.53,0-3.87-2.91-5.87-6.74-5.87h-9.47v11.4Z"/>
+      <path class="cls-2" d="M505.82,235.44h30.56v6.95h-22.14v9.12h19.41v6.78h-19.41v11h22.31v6.89h-30.74v-40.74Z"/>
+      <path class="cls-2" d="M553.53,235.44h8.72l14.64,40.74h-8.77l-2.79-8.66h-14.99l-2.73,8.66h-8.54l14.47-40.74ZM552.31,261.2h10.98l-3.72-11.74c-.7-2.17-1.69-6.27-1.69-6.27h-.12s-1.05,4.1-1.74,6.27l-3.72,11.74Z"/>
+      <path class="cls-2" d="M572.99,235.44h33.41v6.95h-12.49v33.79h-8.43v-33.79h-12.49v-6.95Z"/>
+    </g>
+    <line class="cls-3" x1="298.84" x2="298.84" y2="522.92"/>
+    <line class="cls-3" x1="198.74" y1=".67" x2="198.74" y2="524.2"/>
+    <line class="cls-3" x1="98.64" y1="1.27" x2="98.64" y2="524.2"/>
+    <line class="cls-3" x1="641.66" y1="1.27" x2="641.66" y2="524.2"/>
+    <line class="cls-3" x1="741.17" y1="1.27" x2="741.17" y2="524.2"/>
+    <line class="cls-3" x1="840.77" y1="1.39" x2="840.77" y2="524.32"/>
+    <line class="cls-3" x1="937.97" y1="205.68" x2="0" y2="205.68"/>
+    <line class="cls-3" x1="938.27" y1="306.1" x2=".31" y2="306.1"/>
+    <line class="cls-3" x1="936.24" y1="106.24" x2="2.43" y2="106.24"/>
+    <line class="cls-3" x1="936.24" y1="406.67" x2="2.43" y2="406.67"/>
+    <text class="cls-4" transform="translate(240.25 264.44) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(240.25 165.5) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(240.25 465.06) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(240.25 366.12) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(240.25 70.46) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(682.86 264.44) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(682.86 165.5) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(682.86 465.06) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(682.86 366.12) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+    <text class="cls-4" transform="translate(682.86 70.46) scale(1.02 1)"><tspan x="0" y="0">x</tspan></text>
+  </g>
+</svg>

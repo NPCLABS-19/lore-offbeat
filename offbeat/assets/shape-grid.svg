@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 563" width="1000" height="563">
+  <defs>
+    <path id="pattern-block" d="M186.7 0H302.04V25.81H348.72V51.62H395.39V77.42H442.07V103.23H488.74V167.01H442.07V192.82H395.39V218.62H348.72V244.43H302.04V270.24H186.7V244.43H140.02V218.62H93.35V192.82H46.67V167.01H0V103.23H46.67V77.42H93.35V51.62H140.02V25.81H186.7Z" fill="#FFEFE9"/>
+  </defs>
+  <g transform="translate(0 0)"><use href="#pattern-block" transform="rotate(180 244.37 135.12)"/></g>
+  <g transform="translate(511.26 0)"><use href="#pattern-block" transform="rotate(180 244.37 135.12)"/></g>
+  <g transform="translate(0 292.76)"><use href="#pattern-block" transform="rotate(180 244.37 135.12)"/></g>
+  <g transform="translate(511.26 292.76)"><use href="#pattern-block" transform="rotate(180 244.37 135.12)"/></g>
+  <text x="500" y="281.5" fill="#FF00B4" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="500" text-anchor="middle" dominant-baseline="middle">Custom patterns</text>
+</svg>
