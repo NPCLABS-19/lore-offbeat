@@ -12,6 +12,7 @@ import {
 import { offbeat, type AssetItem, type Chapter, type InspirationItem, type MediaItem } from "@/content/offbeat";
 import { steppedClipPath, steppedSvgPath } from "@/app/lib/steppedShape";
 import { ShapeGenerator } from "./ShapeGenerator";
+import { TemplateGenerator } from "./TemplateGenerator";
 
 const SESSION_KEY = "lore.offbeat.session";
 const USERS_KEY = "lore.offbeat.demo-users";
@@ -783,6 +784,15 @@ function SystemChapter() {
           <p>{offbeat.guidelines.system.tool}</p>
         </header>
         <ShapeGenerator />
+      </section>
+
+      <section className="tool-section" id="template-generator">
+        <div className="tool-banner"><span>{offbeat.theme.banners.app}</span><span>{`${chapter.number}.7`}</span></div>
+        <header className="tool-heading">
+          <div><p className="eyebrow">Lore app · 02</p><h3>Template Generator</h3></div>
+          <p>{offbeat.guidelines.system.templates}</p>
+        </header>
+        <TemplateGenerator />
       </section>
     </>
   );

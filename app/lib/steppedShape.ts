@@ -14,11 +14,16 @@ export type Silhouette = {
   steps: number;
 };
 
-function points(cut: number, steps: number): Array<[number, number]> {
-  const width = 100;
-  const height = 100;
-  const cutX = width * cut;
-  const cutY = height * cut;
+function points(
+  cut: number,
+  steps: number,
+  width = 100,
+  height = 100,
+  cutXOverride?: number,
+  cutYOverride?: number,
+): Array<[number, number]> {
+  const cutX = cutXOverride ?? width * cut;
+  const cutY = cutYOverride ?? height * cut;
   const list: Array<[number, number]> = [];
   const add = (x: number, y: number) =>
     list.push([Number(x.toFixed(2)), Number(y.toFixed(2))]);
@@ -69,6 +74,21 @@ export function steppedClipPath({ cut, steps }: Silhouette): string {
 /** SVG path (0–100 viewBox) for drawing the silhouette as artwork. */
 export function steppedSvgPath({ cut, steps }: Silhouette): string {
   return `M${points(cut, steps)
+    .map((point) => point.join(" "))
+    .join(" L ")} Z`;
+}
+
+/**
+ * SVG path at real pixel dimensions with equal-depth (square) cuts.
+ *
+ * Scaling the normalised path non-uniformly stretches the corner steps —
+ * on a wide, short box the cut reads as a cross rather than a stepped corner.
+ * Deriving the cut from the shorter side keeps every step the same depth,
+ * which is the rule the system is built on.
+ */
+export function steppedRectPath(width: number, height: number, cut: number, steps: number): string {
+  const depth = Math.min(width, height) * cut;
+  return `M${points(cut, steps, width, height, depth, depth)
     .map((point) => point.join(" "))
     .join(" L ")} Z`;
 }

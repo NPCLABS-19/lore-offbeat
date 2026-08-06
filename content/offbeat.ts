@@ -213,7 +213,7 @@ export const offbeat = {
       title: "System",
       summary:
         "One stepped silhouette carries colour, image, and voice.",
-      sections: ["Overview", "Concept", "Collective", "Repeat", "Block", "Generator"],
+      sections: ["Overview", "Concept", "Collective", "Repeat", "Block", "Shape generator", "Template generator"],
       status: "ready",
     },
     {
@@ -324,6 +324,8 @@ export const offbeat = {
       ],
       tool:
         "Build and export an approved stepped composition.",
+      templates:
+        "Start a layout on the golden ratio, in the three ratios the brand ships in. Placeholder copy is editable; swap the wells for real artwork.",
     },
     inspiration: {
       reference:
@@ -431,16 +433,16 @@ export const offbeat = {
       surface: "light",
     },
     {
-      name: "Alternate logo",
-      description: "The stepped slash mark. Use it wherever the primary logo would fall below one inch.",
+      name: "Alternate logo · patch",
+      description: "The stepped slash patch. Use it wherever the primary logo would fall below one inch.",
       preview: "/offbeat/assets/logo-alt.png",
       download: "/offbeat/assets/logo-alt.png",
       format: "PNG",
       surface: "light",
     },
     {
-      name: "Bracket wordmark",
-      description: "The bracketed OFF/BEAT lockup for horizontal spaces and headers.",
+      name: "Alternate logo · bracket",
+      description: "The inverted bracketed lockup. Use it as the header mark on posters and campaign work.",
       preview: "/offbeat/assets/logo-bracket.png",
       download: "/offbeat/assets/logo-bracket.png",
       format: "PNG",
@@ -479,7 +481,7 @@ export const offbeat = {
         { name: "Startup swiping", src: "/offbeat/media/social/startup-swiping.jpg", format: "JPG", orientation: "portrait", alt: "Startup swiping with Aman Gupta social poster", note: "Event", width: 1440, height: 1809 },
         { name: "Partnership announcement", src: "/offbeat/media/social/partnership-announcement.jpg", format: "JPG", orientation: "portrait", alt: "Raj Sharma partnership announcement social design", note: "People", width: 1115, height: 1440 },
         { name: "Grooming report", src: "/offbeat/media/social/grooming-report.jpg", format: "JPG", orientation: "portrait", alt: "Men's grooming brands editorial report cover", note: "Report", width: 1440, height: 1786 },
-        { name: "Venture capital", src: "/offbeat/media/social/venture-capital.jpg", format: "JPG", orientation: "portrait", alt: "Future of venture capital editorial social design", note: "Editorial", width: 1440, height: 1800 },
+        { name: "Shark Tank guide", src: "/offbeat/media/social/shark-tank-guide.jpg", format: "JPG", orientation: "portrait", alt: "Shark Tank survival guide cover in an olive duotone", note: "Guide", width: 1440, height: 1800 },
       ] satisfies MediaItem[],
     },
     /**
@@ -537,7 +539,7 @@ export const offbeat = {
         number: "03",
         title: "Deviate from the pink",
         note: "Pink is a signal, not the only ground. Olive, sienna, violet, and field green all carry the brand — pick one colourway per piece and commit to it.",
-        item: { name: "Shark Tank guide", src: "/offbeat/media/social/shark-tank-guide.jpg", format: "JPG", orientation: "portrait", alt: "Shark Tank survival guide cover treated in an olive duotone", width: 1440, height: 1800 },
+        item: { name: "Venture capital", src: "/offbeat/media/social/venture-capital.jpg", format: "JPG", orientation: "portrait", alt: "Future of venture capital cover: black type on olive stepped plates over a grey-to-olive gradient", width: 1440, height: 1800 },
       },
     ] satisfies PhotoPrinciple[],
     archive: [
@@ -597,6 +599,12 @@ export const offbeat = {
       name: "Shape Generator",
       slug: "shape-generator",
       description: "Build and export stepped OFF/BEAT compositions without leaving the guidelines.",
+      status: "live",
+    },
+    {
+      name: "Template Generator",
+      slug: "template-generator",
+      description: "Start social and campaign layouts on the golden ratio in 1:1, 9:16, and 16:9.",
       status: "live",
     },
   ],
