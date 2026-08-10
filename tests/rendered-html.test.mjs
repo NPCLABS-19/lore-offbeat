@@ -27,11 +27,12 @@ test("server-renders the Lore OFF/BEAT shell", async () => {
 });
 
 test("keeps client content and downloadable files centralized", async () => {
-  const [config, book, generator, templateGenerator, packageJson] = await Promise.all([
+  const [config, book, generator, templateGenerator, templateLayout, packageJson] = await Promise.all([
     readFile(new URL("../content/offbeat.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/LoreBook.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ShapeGenerator.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/TemplateGenerator.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/lib/templateLayout.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
@@ -66,6 +67,10 @@ test("keeps client content and downloadable files centralized", async () => {
   assert.match(templateGenerator, /const value = event\.currentTarget\.value;/);
   assert.match(templateGenerator, /\[field\.key\]: value/);
   assert.doesNotMatch(templateGenerator, /\[field\.key\]: event\.currentTarget\.value/);
+  assert.match(templateLayout, /const x = \(m\.width - w\) \/ 2;/);
+  assert.match(templateLayout, /text\(x \+ w \/ 2, y \+ lineH \* 0\.45, line, head\.size, "#000000", \{/);
+  assert.match(templateLayout, /anchor: "middle", font: DISPLAY_FONT/);
+  assert.doesNotMatch(templateLayout, /text\(x \+ inset, y \+ lineH \* 0\.45, line, head\.size, c\.accentInk/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 
   await Promise.all([

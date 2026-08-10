@@ -35,7 +35,7 @@ export type TemplateKey = "event" | "plates" | "guide" | "announcement" | "overl
 
 export const TEMPLATES: Record<TemplateKey, { name: string; note: string; shape: boolean }> = {
   event: { name: "Event", note: "Lockup, framed subject, headline, meta row", shape: true },
-  plates: { name: "Type plates", note: "Headline on stepped plates", shape: true },
+  plates: { name: "Type plates", note: "Centred headline on stepped plates", shape: true },
   guide: { name: "Guide cover", note: "Full-bleed image, headline on the golden line", shape: false },
   announcement: { name: "Announcement", note: "Subject bleed, headline, role", shape: false },
   overlap: { name: "Type over image", note: "Headline running across the subject", shape: false },
@@ -336,6 +336,9 @@ function buildEvent(o: TemplateOptions) {
 function buildPlates(o: TemplateOptions) {
   const m = metrics(o.ratio);
   const c = o.colourway;
+  // This layout always uses black headline type. When a colourway's accent is
+  // black, move the plate to the approved pale ground so the type stays clear.
+  const plateFill = c.accent.toUpperCase() === "#000000" ? "#D1CDD2" : c.accent;
   const top = m.margin + m.scale.micro * 2;
   const bottom = m.height - m.margin - m.scale.meta * 2.4;
   const inset = m.content * 0.04;
@@ -346,18 +349,16 @@ function buildPlates(o: TemplateOptions) {
   const stack = head.lines.map((line, i) => {
     const y = blockTop + i * lineH;
     const w = Math.min(m.content, line.length * head.size * (DISPLAY_WIDTH_FACTOR + 0.06) + inset * 2);
-    // Plates alternate their edge so the stack reads as one ragged column.
-    const x = i % 2 === 0 ? m.margin : Math.max(m.margin, m.width - m.margin - w);
+    const x = (m.width - w) / 2;
     return (
-      `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})"><path d="${steppedRectPath(w, lineH * 0.9, o.cut, Math.max(o.steps, 1))}" fill="${c.accent}"/></g>` +
-      text(x + inset, y + lineH * 0.45, line, head.size, c.accentInk, {
-        font: DISPLAY_FONT, weight: 800, tracking: -head.size * 0.02, upper: true,
+      `<g transform="translate(${x.toFixed(2)} ${y.toFixed(2)})"><path d="${steppedRectPath(w, lineH * 0.9, o.cut, Math.max(o.steps, 1))}" fill="${plateFill}"/></g>` +
+      text(x + w / 2, y + lineH * 0.45, line, head.size, "#000000", {
+        anchor: "middle", font: DISPLAY_FONT, weight: 800, tracking: -head.size * 0.02, upper: true,
       })
     );
   }).join("");
 
-  // Meta sits in the corners: the plate stack is ragged, so a mid-height
-  // side note would collide with whichever line runs long.
+  // Meta remains in the corners so the centred plate stack stays unobstructed.
   return (
     text(m.margin, m.margin + m.scale.micro, o.copy.metaA, m.scale.micro, c.ink, {
       weight: 700, tracking: m.scale.micro * 0.12, upper: true,
