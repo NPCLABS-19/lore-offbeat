@@ -260,7 +260,7 @@ export const offbeat = {
         { label: "Maximum size", value: "∞", note: "No maximum" },
       ],
       sizingRule:
-        "Below 1 inch the badge loses its stepped corners. Use the alternate logo instead — never a shrunken primary logo.",
+        "Below 1 inch, use the alternate bracketed lockup — never a shrunken primary logo.",
       donts: [
         { label: "Don’t stretch the logo.", glyph: "↔" },
         { label: "Don’t outline the logo.", glyph: "□" },
@@ -433,18 +433,10 @@ export const offbeat = {
       surface: "light",
     },
     {
-      name: "Alternate logo · patch",
-      description: "The stepped slash patch. Use it wherever the primary logo would fall below one inch.",
-      preview: "/offbeat/assets/logo-alt.png",
-      download: "/offbeat/assets/logo-alt.png",
-      format: "PNG",
-      surface: "light",
-    },
-    {
-      name: "Alternate logo · bracket",
-      description: "The inverted bracketed lockup. Use it as the header mark on posters and campaign work.",
-      preview: "/offbeat/assets/logo-bracket.png",
-      download: "/offbeat/assets/logo-bracket.png",
+      name: "Alternate logo",
+      description: "The bracketed OFF/BEAT lockup. Use below 1 in / 96 px; never shrink the primary badge.",
+      preview: "/offbeat/assets/logo-alternate-lockup.png",
+      download: "/offbeat/assets/logo-alternate-lockup.png",
       format: "PNG",
       surface: "light",
     },

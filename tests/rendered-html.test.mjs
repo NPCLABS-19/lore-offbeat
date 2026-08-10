@@ -27,10 +27,11 @@ test("server-renders the Lore OFF/BEAT shell", async () => {
 });
 
 test("keeps client content and downloadable files centralized", async () => {
-  const [config, book, generator, packageJson] = await Promise.all([
+  const [config, book, generator, templateGenerator, packageJson] = await Promise.all([
     readFile(new URL("../content/offbeat.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/LoreBook.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ShapeGenerator.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/TemplateGenerator.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
@@ -46,6 +47,8 @@ test("keeps client content and downloadable files centralized", async () => {
   assert.match(config, /social:/);
   assert.match(config, /motion:/);
   assert.match(config, /offbeat-brand-guidelines\.pdf/);
+  assert.match(config, /logo-alternate-lockup\.png/);
+  assert.doesNotMatch(config, /Alternate logo · patch/);
   // Deck-derived pages are an internal reference archive: nothing in the
   // rendered content model or the UI may point at them.
   assert.doesNotMatch(config, /round-one/);
@@ -53,12 +56,21 @@ test("keeps client content and downloadable files centralized", async () => {
   assert.doesNotMatch(book, /media\.social\[/);
   assert.match(book, /DemoLogin/);
   assert.match(book, /<ShapeGenerator \/>/);
+  assert.match(book, /logo-alternate-lockup\.png/);
+  assert.doesNotMatch(book, /Alternate stepped slash logo/);
   assert.match(generator, /downloadSvg/);
   assert.match(generator, /downloadPng/);
+  // The input handler must capture the value while the native event is live.
+  // Reading currentTarget inside React's deferred updater caused the editor to
+  // unmount during normal typing.
+  assert.match(templateGenerator, /const value = event\.currentTarget\.value;/);
+  assert.match(templateGenerator, /\[field\.key\]: value/);
+  assert.doesNotMatch(templateGenerator, /\[field\.key\]: event\.currentTarget\.value/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 
   await Promise.all([
     access(new URL("../public/offbeat/assets/logo-primary.svg", import.meta.url)),
+    access(new URL("../public/offbeat/assets/logo-alternate-lockup.png", import.meta.url)),
     access(new URL("../public/offbeat/assets/shape-grid.svg", import.meta.url)),
     access(new URL("../public/offbeat/fonts/Archivo-Variable.ttf", import.meta.url)),
     // Preserved research archive — never rendered, never deleted.

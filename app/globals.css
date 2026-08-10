@@ -1970,10 +1970,10 @@ svg {
 /* Logo · minimum size fallback */
 .sizing-rule {
   display: grid;
-  grid-template-columns: 168px minmax(0, 1fr);
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
   gap: clamp(20px, 3vw, 44px);
   align-items: center;
-  max-width: 720px;
+  max-width: 900px;
   margin-top: clamp(32px, 4vw, 56px);
   padding-top: clamp(20px, 2.5vw, 32px);
   border-top: 1px solid rgba(0, 0, 0, 0.22);
@@ -1995,6 +1995,17 @@ svg {
   max-width: 46ch;
   font-size: 15px;
   line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .sizing-rule {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .sizing-rule-mark {
+    width: min(100%, 420px);
+  }
 }
 
 .howto-rule {

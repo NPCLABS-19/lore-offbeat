@@ -181,7 +181,10 @@ export function TemplateGenerator({
                 <input
                   type="text"
                   value={copy[field.key]}
-                  onChange={(event) => setCopy((current) => ({ ...current, [field.key]: event.currentTarget.value }))}
+                  onChange={(event) => {
+                    const value = event.currentTarget.value;
+                    setCopy((current) => ({ ...current, [field.key]: value }));
+                  }}
                 />
               </label>
             ))}

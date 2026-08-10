@@ -20,7 +20,7 @@ import { steppedRectPath } from "./steppedShape";
 export const PHI = 1.618033988749895;
 export const PHI_INV = 0.618033988749895;
 
-/** Minimum rendered width for the bracket lockup; below this use the patch. */
+/** Minimum rendered width for the bracket lockup; below this use the compact signature mark. */
 export const LOCKUP_MIN_WIDTH = 96;
 
 export type RatioKey = "1:1" | "9:16" | "16:9";
@@ -219,8 +219,8 @@ function bracket(x: number, y: number, w: number, h: number, fill: string, flip 
   return `<g transform="${transform}"><path d="${path}" fill="${fill}"/></g>`;
 }
 
-/** The stepped slash patch — the alternate mark for small sizes. */
-function slashPatch(cx: number, cy: number, size: number, c: Colourway) {
+/** The stepped slash signature mark. It is an icon, not the alternate logo. */
+function slashMark(cx: number, cy: number, size: number, c: Colourway) {
   const x = cx - size / 2;
   const y = cy - size / 2;
   const s = size;
@@ -233,11 +233,11 @@ function slashPatch(cx: number, cy: number, size: number, c: Colourway) {
 }
 
 /**
- * The header mark. Below the minimum rendered width the bracket lockup loses
- * its steps, so the alternate patch is used instead — never a shrunken lockup.
+ * The header lockup. Below the minimum rendered width the bracket lockup loses
+ * its steps, so use the compact signature mark rather than a shrunken lockup.
  */
 function headerMark(cx: number, cy: number, width: number, c: Colourway) {
-  if (width < LOCKUP_MIN_WIDTH) return slashPatch(cx, cy, LOCKUP_MIN_WIDTH * 0.5, c);
+  if (width < LOCKUP_MIN_WIDTH) return slashMark(cx, cy, LOCKUP_MIN_WIDTH * 0.5, c);
 
   const h = width * 0.22;
   const bw = width * 0.11;
