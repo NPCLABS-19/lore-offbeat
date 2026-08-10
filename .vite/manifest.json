@@ -11,7 +11,7 @@
     "name": "rolldown-runtime"
   },
   "app/components/LoreBook.tsx": {
-    "file": "assets/LoreBook-D3O7XsHM.js",
+    "file": "assets/LoreBook-C2XlJxw-.js",
     "name": "LoreBook",
     "src": "app/components/LoreBook.tsx",
     "isDynamicEntry": true,
@@ -21,7 +21,7 @@
     ]
   },
   "node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "assets/layout-segment-context-vnHLH8O6.js",
+    "file": "assets/layout-segment-context-CIhHXxBU.js",
     "name": "layout-segment-context",
     "src": "node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -32,7 +32,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "assets/index-CBsafk-l.js",
+    "file": "assets/index-B4bmSJX-.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
