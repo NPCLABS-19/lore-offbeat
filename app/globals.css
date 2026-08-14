@@ -27,6 +27,12 @@ html {
   scroll-padding-top: calc(var(--header-h) + 30px);
 }
 
+/* The book is image-heavy. Browser scroll anchoring can otherwise pull a
+   reader back to a fragment target after they have already moved away. */
+.brand-book {
+  overflow-anchor: none;
+}
+
 body {
   margin: 0;
   min-width: 320px;

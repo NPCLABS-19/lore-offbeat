@@ -68,6 +68,9 @@ test("keeps client content and downloadable files centralized", async () => {
   assert.match(book, /<ShapeGenerator \/>/);
   assert.match(book, /logo-alternate-lockup\.png/);
   assert.doesNotMatch(book, /Alternate stepped slash logo/);
+  assert.match(book, /window\.history\.pushState\(null, "", hash\)/);
+  assert.match(book, /scrollToBookSection\(hash\)/);
+  assert.doesNotMatch(book, /scrollIntoView/);
   assert.match(generator, /downloadSvg/);
   assert.match(generator, /downloadPng/);
   // The input handler must capture the value while the native event is live.

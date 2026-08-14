@@ -4,6 +4,7 @@ import Image from "next/image";
 import {
   type CSSProperties,
   type FormEvent,
+  type MouseEvent as ReactMouseEvent,
   useEffect,
   useMemo,
   useState,
@@ -23,6 +24,20 @@ import { ShapeGenerator } from "./ShapeGenerator";
 import { TemplateGenerator } from "./TemplateGenerator";
 
 const SESSION_KEY = "lore.offbeat.session";
+
+function scrollToBookSection(rawHash: string) {
+  const id = decodeURIComponent(rawHash.replace(/^#/, ""));
+  const target = document.getElementById(id);
+  if (!target) return false;
+
+  const headerHeight = document.querySelector<HTMLElement>(".book-header")?.getBoundingClientRect().height ?? 58;
+  const top = id === "top"
+    ? 0
+    : target.getBoundingClientRect().top + window.scrollY - headerHeight - 30;
+
+  window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+  return true;
+}
 const USERS_KEY = "lore.offbeat.demo-users";
 const subscribeToHydration = () => () => undefined;
 
@@ -390,7 +405,7 @@ function LogoChapter() {
           </div>
           <div className="logo-family-alternate">
             <span>Alternate lockup</span>
-            <Image src="/offbeat/assets/logo-alternate-lockup.png" alt="Alternate OFF/BEAT bracketed lockup" width={4465} height={1271} unoptimized />
+            <Image src="/offbeat/assets/logo-alternate-lockup.png" alt="Alternate OFF/BEAT bracketed lockup" width={4390} height={1196} unoptimized />
           </div>
         </div>
         <div className="role-grid">
@@ -408,8 +423,8 @@ function LogoChapter() {
             <Image
               src="/offbeat/assets/logo-alternate-lockup.png"
               alt="Alternate OFF/BEAT bracketed lockup, used below one inch"
-              width={4465}
-              height={1271}
+              width={4390}
+              height={1196}
               unoptimized
             />
           </div>
@@ -1022,13 +1037,23 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
 
   useEffect(() => {
     // The authenticated book mounts after the browser's initial hash pass.
-    // Resolve cold deep links once the chapter DOM exists.
+    // Resolve cold deep links once the chapter DOM exists, without invoking
+    // the browser's native fragment scroller (which can re-anchor later).
     const hash = window.location.hash.slice(1);
     if (!hash) return;
     const frame = window.requestAnimationFrame(() => {
-      document.getElementById(decodeURIComponent(hash))?.scrollIntoView({ block: "start" });
+      scrollToBookSection(hash);
     });
     return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    const restoreSection = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash) window.requestAnimationFrame(() => scrollToBookSection(hash));
+    };
+    window.addEventListener("popstate", restoreSection);
+    return () => window.removeEventListener("popstate", restoreSection);
   }, []);
 
   useEffect(() => {
@@ -1042,6 +1067,17 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
     navigator.clipboard?.writeText(value).catch(() => undefined);
     setToast(`${value} copied`);
     window.setTimeout(() => setToast(""), 1800);
+  }
+
+  function navigateWithinBook(event: ReactMouseEvent<HTMLElement>) {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const origin = event.target as HTMLElement;
+    const anchor = origin.closest<HTMLAnchorElement>('a[href^="#"]');
+    const hash = anchor?.getAttribute("href");
+    if (!hash || hash === "#" || !scrollToBookSection(hash)) return;
+
+    event.preventDefault();
+    if (window.location.hash !== hash) window.history.pushState(null, "", hash);
   }
 
   const themeStyle = useMemo(() => ({
@@ -1062,7 +1098,7 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
   }) as CSSProperties, []);
 
   return (
-    <main className="brand-book" style={themeStyle} id="top">
+    <main className="brand-book" style={themeStyle} id="top" onClick={navigateWithinBook}>
       <a className="skip-link" href="#contents">Skip to contents</a>
       <BookHeader onMenu={() => setMenuOpen(true)} onLogout={onLogout} email={email} />
       <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />
