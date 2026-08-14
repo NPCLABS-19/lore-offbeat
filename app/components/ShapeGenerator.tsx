@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import NextImage from "next/image";
 import { useMemo, useState, type ChangeEvent, type CSSProperties } from "react";
+import { svgToPng } from "@/app/lib/svgExport";
 
 const MIN_DIMENSION = 80;
 const MAX_DIMENSION = 2400;
@@ -442,42 +443,15 @@ export function ShapeGenerator({
     window.setTimeout(() => setCopyStatus("idle"), 1600);
   };
 
-  const downloadPng = () => {
+  const downloadPng = async () => {
     setPngStatus("rendering");
-    const source = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-    const sourceUrl = URL.createObjectURL(source);
-    const image = new Image();
-
-    image.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = state.width * EXPORT_SCALE;
-        canvas.height = state.height * EXPORT_SCALE;
-        const context = canvas.getContext("2d");
-        if (!context) throw new Error("Canvas is unavailable");
-
-        context.scale(EXPORT_SCALE, EXPORT_SCALE);
-        context.drawImage(image, 0, 0, state.width, state.height);
-        canvas.toBlob((blob) => {
-          if (blob) {
-            downloadBlob(`${safeAssetName}@2x.png`, blob);
-            setPngStatus("idle");
-          } else {
-            setPngStatus("failed");
-          }
-        }, "image/png");
-      } catch {
-        setPngStatus("failed");
-      } finally {
-        URL.revokeObjectURL(sourceUrl);
-      }
-    };
-
-    image.onerror = () => {
-      URL.revokeObjectURL(sourceUrl);
+    try {
+      const blob = await svgToPng(svg, state.width, state.height, EXPORT_SCALE);
+      downloadBlob(`${safeAssetName}@2x.png`, blob);
+      setPngStatus("idle");
+    } catch {
       setPngStatus("failed");
-    };
-    image.src = sourceUrl;
+    }
   };
 
   const themes = [
@@ -660,7 +634,7 @@ export function ShapeGenerator({
           <legend>Image fill</legend>
           {state.imageSrc ? (
             <div className="obsg-image-row">
-              <Image
+              <NextImage
                 className="obsg-image-thumb"
                 src={state.imageSrc}
                 alt="Uploaded image used as shape fill"

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -42,9 +42,10 @@ test("keeps client content and downloadable files centralized", async () => {
   assert.match(config, /showcase:\s*{/);
   assert.match(config, /archive:\s*\[/);
   assert.match(config, /photography:\s*\[/);
-  assert.match(config, /inspiration:\s*\[/);
+  assert.match(config, /tasteAlignment:\s*{/);
+  assert.match(config, /guidelineReferences:\s*{/);
   assert.match(config, /slug:\s*"howto"/);
-  assert.match(config, /slug:\s*"inspiration"/);
+  assert.match(config, /slug:\s*"taste-alignment"/);
   assert.match(config, /social:/);
   assert.match(config, /motion:/);
   assert.match(config, /offbeat-brand-guidelines\.pdf/);
@@ -55,6 +56,14 @@ test("keeps client content and downloadable files centralized", async () => {
   assert.doesNotMatch(config, /round-one/);
   assert.doesNotMatch(book, /round-one/);
   assert.doesNotMatch(book, /media\.social\[/);
+  assert.doesNotMatch(config, /media\.inspiration/);
+  assert.doesNotMatch(config, /42\s*%|28\s*%|18\s*%|12\s*%/);
+  assert.doesNotMatch(book, /Don.t outline the logo/i);
+  assert.match(config, /https:\/\/in\.pinterest\.com\/pin\/1082623198506999821\//);
+  assert.match(config, /https:\/\/in\.pinterest\.com\/pin\/1082623198507000058\//);
+  assert.match(book, /View all \{items\.length\} references/);
+  assert.match(book, /What this demonstrates/);
+  assert.match(book, /Preferred use/);
   assert.match(book, /DemoLogin/);
   assert.match(book, /<ShapeGenerator \/>/);
   assert.match(book, /logo-alternate-lockup\.png/);
@@ -84,7 +93,23 @@ test("keeps client content and downloadable files centralized", async () => {
     access(new URL("../public/offbeat/media/logo-exports/asset-38.png", import.meta.url)),
     access(new URL("../public/offbeat/media/motion/logo-slash-loop.mp4", import.meta.url)),
     access(new URL("../public/offbeat/media/social/partnership-announcement.jpg", import.meta.url)),
-    access(new URL("../public/offbeat/media/inspiration/crowd-energy.jpg", import.meta.url)),
+    access(new URL("../public/offbeat/media/guideline-references/business-guide.jpeg", import.meta.url)),
+    access(new URL("../public/offbeat/media/guideline-references/environmental-pattern.jpeg", import.meta.url)),
+    access(new URL("../public/offbeat/media/taste-alignment/is-offbeat/01-street-poster.jpg", import.meta.url)),
+    access(new URL("../public/offbeat/media/taste-alignment/not-offbeat/13-soft-homepage.jpg", import.meta.url)),
     access(new URL("../public/og.png", import.meta.url)),
   ]);
+
+  const [guidelineFiles, isOffbeatFiles, notOffbeatFiles] = await Promise.all([
+    readdir(new URL("../public/offbeat/media/guideline-references/", import.meta.url)),
+    readdir(new URL("../public/offbeat/media/taste-alignment/is-offbeat/", import.meta.url)),
+    readdir(new URL("../public/offbeat/media/taste-alignment/not-offbeat/", import.meta.url)),
+  ]);
+
+  assert.equal(guidelineFiles.length, 13, "stores the duplicate business guide only once");
+  assert.equal(isOffbeatFiles.length, 13);
+  assert.equal(notOffbeatFiles.length, 13);
+  for (const file of guidelineFiles) {
+    assert.match(config, new RegExp(file.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
 });

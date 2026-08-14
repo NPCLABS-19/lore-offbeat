@@ -58,6 +58,20 @@ export type InspirationItem = MediaItem & {
   steps: number;
 };
 
+export type TasteReference = {
+  title: string;
+  src: string;
+  sourceUrl: string;
+  alt: string;
+  featured?: boolean;
+};
+
+export type GuidelineReference = MediaItem & {
+  demonstrates: string;
+  preferred: string;
+  avoid?: string;
+};
+
 export type HowToTool = {
   number: string;
   title: string;
@@ -137,11 +151,11 @@ export const offbeat = {
   chapters: [
     {
       number: "01",
-      slug: "inspiration",
-      title: "Inspiration",
+      slug: "taste-alignment",
+      title: "OFF/BEAT Taste Alignment",
       summary:
-        "Shape play from the heritage of India, modernised for the new Indian.",
-      sections: ["The reference", "Energy"],
+        "The cultural references, tension, and restraint that make something feel off/beat.",
+      sections: ["Origins", "What is off/beat", "What is not off/beat"],
       status: "ready",
     },
     {
@@ -151,14 +165,14 @@ export const offbeat = {
       summary:
         "The primary identifier of the OFF/BEAT brand.",
       sections: [
-        "Primary identifier",
-        "Construction",
-        "Contrast and color",
-        "Clearspace",
+        "Logo family",
+        "Colour and contrast",
+        "Placement",
+        "Stroked logo",
+        "Construction and clearspace",
         "Approved files",
-        "Explorations",
-        "Motion",
-        "Keep the beat",
+        "Logo in motion",
+        "Keep recognition",
       ],
       status: "ready",
     },
@@ -188,13 +202,11 @@ export const offbeat = {
       summary:
         "A focused palette for contrast, recognition, and energy.",
       sections: [
-        "Introduction",
-        "Primary palette",
-        "Secondary palette",
-        "Proportion",
-        "Combinations",
-        "Contrast",
-        "Don’ts",
+        "Palette",
+        "Logo colours",
+        "Two or three colours",
+        "Pink cadence",
+        "Gradients",
       ],
       status: "ready",
     },
@@ -212,8 +224,8 @@ export const offbeat = {
       slug: "system",
       title: "System",
       summary:
-        "One stepped silhouette carries colour, image, and voice.",
-      sections: ["Overview", "Concept", "Collective", "Repeat", "Block", "Shape generator", "Template generator"],
+        "Type, pink, slash, brackets, and selective step cuts work together.",
+      sections: ["Brand signals", "Containers", "Slash and brackets", "Patterns", "Pattern in use", "Shape generator", "Template generator"],
       status: "ready",
     },
     {
@@ -221,8 +233,8 @@ export const offbeat = {
       slug: "application",
       title: "Application",
       summary:
-        "Approved merchandise, object, and social applications.",
-      sections: ["Merchandise and objects", "Social formats"],
+        "Context-led examples for announcements, collaborations, objects, and owned social.",
+      sections: ["Layout hierarchy", "Physical applications", "Published formats"],
       status: "ready",
     },
     {
@@ -243,17 +255,17 @@ export const offbeat = {
     ],
     logo: {
       primary:
-        "Use the logo as the clearest expression of the brand.",
+        "Use the primary badge by default. Use the alternate lockup when the space is narrow, small, or structurally constrained.",
       construction:
         "Build the mark from equal stepped cuts.",
       contrast:
-        "Always preserve strong contrast.",
+        "The primary logo uses Signal Pink, black, or off-white only. Choose the version that creates the clearest contrast.",
       clearspace:
         "Keep type, imagery, and other marks outside the clearspace.",
       assets:
         "Download approved source artwork.",
       consistency:
-        "Protect recognition by using approved artwork.",
+        "The logo signs the work; it does not need to dominate it.",
       sizing: [
         { label: "Minimum size", value: "1 in", note: "In print" },
         { label: "Minimum size", value: "96 px", note: "On screen" },
@@ -263,12 +275,21 @@ export const offbeat = {
         "Below 1 inch, use the alternate bracketed lockup — never a shrunken primary logo.",
       donts: [
         { label: "Don’t stretch the logo.", glyph: "↔" },
-        { label: "Don’t outline the logo.", glyph: "□" },
+        { label: "Don’t use the stroked logo as the official identifier.", glyph: "□" },
         { label: "Don’t rotate the logo.", glyph: "↗" },
         { label: "Don’t add shadows or effects.", glyph: "✦" },
-        { label: "Don’t apply patterns.", glyph: "▦" },
+        { label: "Don’t turn the logo shape into decoration everywhere.", glyph: "▦" },
         { label: "Don’t use unapproved colors.", glyph: "◒" },
       ],
+      roles: [
+        { title: "Primary badge", note: "Default identifier for clear, generous spaces." },
+        { title: "Alternate lockup", note: "Use in narrow, small, or structurally constrained spaces." },
+        { title: "Secondary lockups", note: "May use the wider approved palette when contrast remains strong." },
+      ],
+      placement:
+        "Treat the logo as the signature of the asset: top-middle or on the centre axis. Never park it in a corner or along a side.",
+      stroke:
+        "Use transparent or negative-fill strokes as background depth. Filled-and-stroked versions belong to creative objects, posters, lightboxes, and merchandise — never formal communication.",
     },
     typography: {
       primary:
@@ -287,11 +308,15 @@ export const offbeat = {
     },
     color: {
       palette:
-        "Use Signal Pink for recognition and neutrals for structure.",
+        "Use Signal Pink for recognition, black and off-white for structure, and the supporting palette with intent.",
       proportion:
-        "Let neutral grounds lead. Use pink as a signal.",
+        "Most layouts need only two or three colours. Let one colour lead and use the others to structure or signal.",
       combinations:
-        "Pair one expressive color with a calm ground.",
+        "Pink can be a background, foreground object, or small intervention. It does not need to wash the whole image.",
+      cadence:
+        "Across social output, roughly one in every three assets should visibly feature pink. Prefer a real pink object or material when the idea allows it.",
+      gradient:
+        "When a gradient is useful, favour a 61.8 / 38.2 balance so one colour clearly leads.",
     },
     placeholders: {
       framework:
@@ -306,15 +331,15 @@ export const offbeat = {
     },
     system: {
       overview:
-        "The system is where the brand comes alive. Every frame is one silhouette — a rectangle that loses its corners in equal steps, cut in the Shape Generator.",
+        "OFF/BEAT is not one shape. Loud typography, selective pink, the slash, brackets, and occasional step cuts can work independently or together.",
       concept:
-        "Every frame starts as a rectangle and loses its corners in equal steps. One to four cuts, set to the golden ratio — always from the generator, never drawn by hand.",
+        "Use containers when they organise a thought: to hold an image, make a type plate, frame a collaboration, or create depth.",
       collective:
-        "Photography sits inside the silhouette. Vary the scale, the cut, and the count — the shape does the framing.",
+        "A 3px stroke is preferred on a 1080px canvas; 2px is the minimum. Scale the stroke proportionally with the artwork.",
       repeat:
-        "One image, repeated across silhouettes, expresses momentum.",
+        "Use the slash when it completes the idea — /threads, /timezones, /language, /thinking. Brackets may frame images, headlines, content, and collaborations.",
       block:
-        "Colour can replace photography as a block, carrying type or pattern.",
+        "Patterns may carry image or copy, but they should create rhythm rather than become the subject of every layout.",
       shape:
         "Repeat, rotate, or frame with the stepped shape.",
       principles: [
@@ -330,8 +355,10 @@ export const offbeat = {
     inspiration: {
       reference:
         "The main reference for off/beat is shape play inspired by the heritage of India — stepwells, jaalis, patterned brickwork — modernised for the new Indian. It connects to our history and still gives a refreshed identity that looks to the future.",
-      energy:
-        "Energy the brand borrows from — crowds, structures, late hours — always held inside a generator silhouette.",
+      is:
+        "Irreverent, culturally alert, unexpected, and comfortable with tension. Pink appears as a real intervention, not a cosmetic filter.",
+      isNot:
+        "Avoid cute, decorative, lifestyle-polished, or generically fashionable pink. Softness without a point is not enough.",
     },
     howto: {
       intro:
@@ -499,20 +526,53 @@ export const offbeat = {
       { name: "Brick jaali", src: "/offbeat/media/inspiration/brick-jaali.jpg", format: "JPG", orientation: "square", alt: "Red brick jaali wall of repeating stepped cross openings", credit: "Supplied reference", cut: 0.309, steps: 1, width: 576, height: 599 },
       { name: "Patterned brickwork", src: "/offbeat/media/inspiration/brick-facade.jpg", format: "JPG", orientation: "square", alt: "Polychrome brick facade weaving diamond patterns across a stepped corner", credit: "Supplied reference", cut: 0.191, steps: 2, width: 852, height: 852 },
     ] satisfies InspirationItem[],
-    /**
-     * Open-source reference imagery (Unsplash archive via Lorem Picsum).
-     * Not client work — shown only inside System and Inspiration as
-     * clearly-credited reference material held in the brand silhouette.
-     */
-    inspiration: [
-      { name: "Crowd energy", src: "/offbeat/media/inspiration/crowd-energy.jpg", format: "JPG", orientation: "portrait", alt: "Concert crowd with raised hands under stage light", credit: "Desi Mendoza · Unsplash", cut: 0.191, steps: 2, width: 1200, height: 1500 },
-      { name: "Structure", src: "/offbeat/media/inspiration/structure-silhouette.jpg", format: "JPG", orientation: "square", alt: "Figure silhouetted against a steel-framed terminal window", credit: "Thong Vo · Unsplash", cut: 0.309, steps: 1, width: 1200, height: 1200 },
-      { name: "Off duty", src: "/offbeat/media/inspiration/heels-red.jpg", format: "JPG", orientation: "portrait", alt: "White heels on a paint-splattered red floor", credit: "Alejandro Escamilla · Unsplash", cut: 0.191, steps: 3, width: 1200, height: 1500 },
-      { name: "City after hours", src: "/offbeat/media/inspiration/city-bridge.jpg", format: "JPG", orientation: "landscape", alt: "Suspension bridge and skyline at night", credit: "Anders Jildén · Unsplash", cut: 0.309, steps: 2, width: 1600, height: 1000 },
-      { name: "Creator", src: "/offbeat/media/inspiration/camera-creator.jpg", format: "JPG", orientation: "portrait", alt: "Photographer holding a twin-lens camera, black and white", credit: "Jennifer Trovato · Unsplash", cut: 0.309, steps: 4, width: 1200, height: 1500 },
-      { name: "Sea change", src: "/offbeat/media/inspiration/hooded-sea.jpg", format: "JPG", orientation: "square", alt: "Hooded figure facing the sea", credit: "Patryk Sobczak · Unsplash", cut: 0.382, steps: 2, width: 1200, height: 1200 },
-      { name: "Desk hours", src: "/offbeat/media/inspiration/desk-work.jpg", format: "JPG", orientation: "landscape", alt: "Laptop and coffee on a warm wooden desk", credit: "Galymzhan Abdugalimov · Unsplash", cut: 0.191, steps: 4, width: 1600, height: 1000 },
-    ] satisfies InspirationItem[],
+    tasteAlignment: {
+      isOffbeat: [
+        { title: "Street-level interruption", src: "/offbeat/media/taste-alignment/is-offbeat/01-street-poster.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198506999821/", alt: "Pink mouth poster attached to an ordinary street pole", featured: true },
+        { title: "Functional object, strange colour", src: "/offbeat/media/taste-alignment/is-offbeat/02-pink-beanbag.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198506999835/", alt: "Pink beanbag and direct yellow information sign", featured: true },
+        { title: "Useful imperfection", src: "/offbeat/media/taste-alignment/is-offbeat/03-spray-chair.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198506999840/", alt: "Pink plastic chair sitting in grass", featured: true },
+        { title: "Irreverent object", src: "/offbeat/media/taste-alignment/is-offbeat/04-pink-figurine.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198506999861/", alt: "Bright pink figurine wearing a hat and glasses", featured: true },
+        { title: "Textured portrait", src: "/offbeat/media/taste-alignment/is-offbeat/05-textured-portrait.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198506999867/", alt: "Textured pink portrait wearing dark glasses" },
+        { title: "Type with tension", src: "/offbeat/media/taste-alignment/is-offbeat/06-giorgio-poster.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198506999887/", alt: "Black and white portrait interrupted by bright pink type" },
+        { title: "Landscape intervention", src: "/offbeat/media/taste-alignment/is-offbeat/07-coast-intervention.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198506999903/", alt: "Bright pink square placed between rocks on a coast" },
+        { title: "Street-fashion collision", src: "/offbeat/media/taste-alignment/is-offbeat/08-street-fashion.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000108/", alt: "Feet and a pink object interrupting a rough street surface" },
+        { title: "Raw poster voice", src: "/offbeat/media/taste-alignment/is-offbeat/09-raw-poster.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000244/", alt: "Raw graphic poster combining dark imagery and direct copy" },
+        { title: "Unexpected civic colour", src: "/offbeat/media/taste-alignment/is-offbeat/10-traffic-cone.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000383/", alt: "Traffic cone outside a building with a sharp pink accent" },
+        { title: "Cultural wit", src: "/offbeat/media/taste-alignment/is-offbeat/11-cattle-poster.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000385/", alt: "Cattle image used as a blunt graphic poster" },
+        { title: "Colour in the real world", src: "/offbeat/media/taste-alignment/is-offbeat/12-outdoor-concert.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000395/", alt: "Outdoor concert images contrasting pink and blue" },
+        { title: "Surreal portrait", src: "/offbeat/media/taste-alignment/is-offbeat/13-pink-horses.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000409/", alt: "Black and white portrait interrupted by vivid pink horses" },
+      ] satisfies TasteReference[],
+      notOffbeat: [
+        { title: "Pastel experience", src: "/offbeat/media/taste-alignment/not-offbeat/01-pastel-room.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000058/", alt: "Polished pastel pink experience room", featured: true },
+        { title: "Novelty softness", src: "/offbeat/media/taste-alignment/not-offbeat/02-fluffy-phone.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000073/", alt: "Vintage telephone mounted on a fluffy pink surface", featured: true },
+        { title: "Generic lifestyle pink", src: "/offbeat/media/taste-alignment/not-offbeat/03-pink-shirt.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000095/", alt: "Polished lifestyle photograph featuring a pink shirt", featured: true },
+        { title: "Soft summer mood", src: "/offbeat/media/taste-alignment/not-offbeat/04-summer-lifestyle.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000183/", alt: "Softly styled summer lifestyle image", featured: true },
+        { title: "Pink as costume", src: "/offbeat/media/taste-alignment/not-offbeat/05-pink-phone.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000188/", alt: "Pink telephone held by a manicured hand" },
+        { title: "Polished home styling", src: "/offbeat/media/taste-alignment/not-offbeat/06-soft-home.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000191/", alt: "Softly art-directed pink home-show scene" },
+        { title: "Trend-led typography", src: "/offbeat/media/taste-alignment/not-offbeat/07-trendy-type.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000226/", alt: "Fashionable black typography on a flat pink ground" },
+        { title: "Decorative sentiment", src: "/offbeat/media/taste-alignment/not-offbeat/08-love-sign.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000287/", alt: "Pink sign reading All We Need is Love beside a chair" },
+        { title: "Cute styling", src: "/offbeat/media/taste-alignment/not-offbeat/09-pink-slippers.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000288/", alt: "Pink slippers arranged beside a newspaper" },
+        { title: "Lifestyle decoration", src: "/offbeat/media/taste-alignment/not-offbeat/10-pink-mirror.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000295/", alt: "Pink mirror styled beside a plant" },
+        { title: "Glitter novelty", src: "/offbeat/media/taste-alignment/not-offbeat/11-glitter-phone.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000300/", alt: "Pink glitter telephone with a matching hand" },
+        { title: "Decorative banner", src: "/offbeat/media/taste-alignment/not-offbeat/12-decorative-banner.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000342/", alt: "Decorative pink identity banner" },
+        { title: "Soft homepage language", src: "/offbeat/media/taste-alignment/not-offbeat/13-soft-homepage.jpg", sourceUrl: "https://in.pinterest.com/pin/1082623198507000352/", alt: "Soft, polished lifestyle homepage composition" },
+      ] satisfies TasteReference[],
+    },
+    guidelineReferences: {
+      businessGuide: { name: "A guide to business", src: "/offbeat/media/guideline-references/business-guide.jpeg", format: "JPG", orientation: "square", alt: "Type-led business guide artwork with a street-food cart and limited pink, oxblood, and olive palette", width: 1080, height: 1080, demonstrates: "Type leads; the image interrupts the headline and the logo stays absent.", preferred: "Use for announcement-led social where the idea needs immediate scale." },
+      patternMaster: { name: "Pattern master", src: "/offbeat/media/guideline-references/pattern-master.jpeg", format: "JPG", orientation: "landscape", alt: "Pink and oxblood master pattern combining filled plates, outlined containers, slash marks, and copy", width: 799, height: 667, demonstrates: "Filled and negative containers can alternate to create depth.", preferred: "Build a repeat from consistent strokes and a small vocabulary of marks." },
+      bandana: { name: "Bandana merchandise", src: "/offbeat/media/guideline-references/bandana-merch.jpeg", format: "JPG", orientation: "portrait", alt: "Pink bandanas tied to a dark merchandise rail above OFF/BEAT T-shirts", width: 854, height: 1280, demonstrates: "Pink exists as a real material inside a darker environment.", preferred: "Use real objects, fabric, light, and scenery before colour-correcting an entire image." },
+      onDuty: { name: "On/Duty apparel", src: "/offbeat/media/guideline-references/on-duty-apparel.jpeg", format: "JPG", orientation: "landscape", alt: "T-shirt artwork using English and Devanagari type, black plates, small pink blocks, and slash punctuation", width: 1297, height: 903, demonstrates: "Translation, slash, and rectangular containers carry the idea without repeating the badge.", preferred: "Use regional scripts as language, not as surface decoration." },
+      pharmacy: { name: "Vibe clinic", src: "/offbeat/media/guideline-references/slash-pharmacy.jpeg", format: "JPG", orientation: "portrait", alt: "Offbeat Pharmacy Vibe Clinic graphic centred on a black slash inside a stepped badge", width: 558, height: 626, demonstrates: "The slash becomes the subject because it completes the teaser idea.", preferred: "Use the slash when it has semantic meaning." },
+      multilingual: { name: "Multilingual lockups", src: "/offbeat/media/guideline-references/multilingual-lockups.jpeg", format: "JPG", orientation: "landscape", alt: "Four OFF/BEAT lockups combining regional scripts with the slash and BEAT", width: 1600, height: 546, demonstrates: "The alternate system can flex across languages while preserving the slash and shared baseline.", preferred: "Keep contrast, spacing, and the slash consistent across scripts." },
+      outerWall: { name: "Outer-wall pattern", src: "/offbeat/media/guideline-references/outer-wall-pattern.jpeg", format: "JPG", orientation: "landscape", alt: "Wide outlined repeat using brackets, stepped corners, micro copy, and OFF slash labels", width: 1600, height: 522, demonstrates: "Outlined containers form an architectural rhythm rather than a foreground logo wall.", preferred: "Use 3px strokes at 1080px; never go below 2px." },
+      keyAd: { name: "Key advertisement", src: "/offbeat/media/guideline-references/key-ad.jpeg", format: "JPG", orientation: "portrait", alt: "OFF/BEAT pink acrylic key tag on keys over a dark-to-pink gradient", width: 1024, height: 1536, demonstrates: "A pink object can carry recognition while a controlled gradient supports depth.", preferred: "Let one colour lead; keep the gradient near a 61.8 / 38.2 balance." },
+      strokedLogo: { name: "Filled-and-stroked logo", src: "/offbeat/media/guideline-references/stroked-logo.jpeg", format: "JPG", orientation: "square", alt: "Pink stepped OFF/BEAT logo with a black outline on warm white", width: 1280, height: 1280, demonstrates: "A filled-and-stroked mark is an expressive graphic treatment, not the formal identifier.", preferred: "Reserve it for posters, objects, lightboxes, keychains, and merchandise.", avoid: "Do not use it for official communication." },
+      billboardType: { name: "Type-led billboard", src: "/offbeat/media/guideline-references/billboard-type.jpeg", format: "JPG", orientation: "landscape", alt: "Large pink billboard led by a loud Hindi headline and two small image cutouts", width: 1600, height: 1200, demonstrates: "The idea and typography take precedence; no logo is needed.", preferred: "Use when the audience or publishing context already establishes OFF/BEAT." },
+      billboardLogo: { name: "Logo-signature billboard", src: "/offbeat/media/guideline-references/billboard-logo.jpeg", format: "JPG", orientation: "landscape", alt: "Wide oxblood billboard with the OFF/BEAT logo centred on the composition axis", width: 1600, height: 1200, demonstrates: "When a logo is needed, it signs the centre axis instead of occupying a corner.", preferred: "Use for collaborations, end slates, and identity-led environmental moments." },
+      pinkLighter: { name: "Pink lighter", src: "/offbeat/media/guideline-references/pink-lighter.jpeg", format: "JPG", orientation: "portrait", alt: "Simple translucent pink lighter on a white background", width: 787, height: 908, demonstrates: "An ordinary real object can create a stronger pink signal than a full image treatment.", preferred: "Find the pink in the subject or setting before adding a colour overlay." },
+      environmentalPattern: { name: "Pattern in use", src: "/offbeat/media/guideline-references/environmental-pattern.jpeg", format: "JPG", orientation: "portrait", alt: "Large OFF/BEAT event wall using filled pink panels, outlined dark containers, slash marks, and a centred logo", width: 1200, height: 1600, demonstrates: "The pattern scales into an environment while keeping the logo on the centre axis.", preferred: "Use repetition for atmosphere and depth, not as the only subject." },
+    } satisfies Record<string, GuidelineReference>,
     photography: [
       {
         number: "01",
@@ -568,6 +628,25 @@ export const offbeat = {
           { name: "Work-life balance", src: "/offbeat/media/social/work-life-balance.jpg", format: "JPG", dimensions: "1440 × 1800" },
           { name: "Cohort applications", src: "/offbeat/media/social/cohort-applications.jpg", format: "JPG", dimensions: "1440 × 1800" },
           { name: "Solar investment", src: "/offbeat/media/social/solar-investment.jpg", format: "JPG", dimensions: "1440 × 1840" },
+        ],
+      },
+      {
+        title: "Guideline references",
+        note: "Owner-supplied evidence used throughout the guideline spreads.",
+        entries: [
+          { name: "A guide to business", src: "/offbeat/media/guideline-references/business-guide.jpeg", format: "JPG", dimensions: "1080 × 1080" },
+          { name: "Pattern master", src: "/offbeat/media/guideline-references/pattern-master.jpeg", format: "JPG", dimensions: "799 × 667" },
+          { name: "Bandana merchandise", src: "/offbeat/media/guideline-references/bandana-merch.jpeg", format: "JPG", dimensions: "854 × 1280" },
+          { name: "On/Duty apparel", src: "/offbeat/media/guideline-references/on-duty-apparel.jpeg", format: "JPG", dimensions: "1297 × 903" },
+          { name: "Vibe clinic", src: "/offbeat/media/guideline-references/slash-pharmacy.jpeg", format: "JPG", dimensions: "558 × 626" },
+          { name: "Multilingual lockups", src: "/offbeat/media/guideline-references/multilingual-lockups.jpeg", format: "JPG", dimensions: "1600 × 546" },
+          { name: "Outer-wall pattern", src: "/offbeat/media/guideline-references/outer-wall-pattern.jpeg", format: "JPG", dimensions: "1600 × 522" },
+          { name: "Key advertisement", src: "/offbeat/media/guideline-references/key-ad.jpeg", format: "JPG", dimensions: "1024 × 1536" },
+          { name: "Filled-and-stroked logo", src: "/offbeat/media/guideline-references/stroked-logo.jpeg", format: "JPG", dimensions: "1280 × 1280" },
+          { name: "Type-led billboard", src: "/offbeat/media/guideline-references/billboard-type.jpeg", format: "JPG", dimensions: "1600 × 1200" },
+          { name: "Logo-signature billboard", src: "/offbeat/media/guideline-references/billboard-logo.jpeg", format: "JPG", dimensions: "1600 × 1200" },
+          { name: "Pink lighter", src: "/offbeat/media/guideline-references/pink-lighter.jpeg", format: "JPG", dimensions: "787 × 908" },
+          { name: "Pattern in use", src: "/offbeat/media/guideline-references/environmental-pattern.jpeg", format: "JPG", dimensions: "1200 × 1600" },
         ],
       },
       {

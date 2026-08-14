@@ -9,7 +9,15 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
-import { offbeat, type AssetItem, type Chapter, type InspirationItem, type MediaItem } from "@/content/offbeat";
+import {
+  offbeat,
+  type AssetItem,
+  type Chapter,
+  type GuidelineReference,
+  type InspirationItem,
+  type MediaItem,
+  type TasteReference,
+} from "@/content/offbeat";
 import { steppedClipPath, steppedSvgPath } from "@/app/lib/steppedShape";
 import { ShapeGenerator } from "./ShapeGenerator";
 import { TemplateGenerator } from "./TemplateGenerator";
@@ -303,20 +311,46 @@ function SteppedFigure({ item, masked = true }: { item: InspirationItem; masked?
   );
 }
 
-function ExplorationFigure({ item, lead = false }: { item: MediaItem; lead?: boolean }) {
+function EvidenceFigure({ item, tone = "light" }: { item: GuidelineReference; tone?: "light" | "dark" }) {
   return (
-    <figure className={`exploration-figure${lead ? " exploration-lead" : ""}`}>
-      <Image src={item.src} alt={item.alt} width={item.width ?? 1200} height={item.height ?? 800} unoptimized />
+    <figure className={`evidence-figure evidence-${tone}`}>
+      <Image src={item.src} alt={item.alt} width={item.width ?? 1200} height={item.height ?? 1200} unoptimized />
       <figcaption>
-        <div>
-          {item.note ? <small>{item.note}</small> : null}
-          <strong>{item.name}</strong>
-        </div>
-        <a href={item.src} download aria-label={`Download ${item.name} as ${item.format}`}>
-          {item.format} <Icon name="download" />
-        </a>
+        <div className="evidence-title"><small>What this demonstrates</small><strong>{item.name}</strong></div>
+        <p>{item.demonstrates}</p>
+        <p><b>Preferred use</b>{item.preferred}</p>
+        {item.avoid ? <p><b>Avoid</b>{item.avoid}</p> : null}
+        <a href={item.src} download aria-label={`Download ${item.name} as ${item.format}`}>{item.format} <Icon name="download" /></a>
       </figcaption>
     </figure>
+  );
+}
+
+function TasteReferenceCard({ item }: { item: TasteReference }) {
+  return (
+    <a className="taste-reference-card" href={item.sourceUrl} target="_blank" rel="noreferrer">
+      <Image src={item.src} alt={item.alt} width={736} height={920} unoptimized />
+      <span><small>Taste reference only</small><strong>{item.title}</strong><Icon name="arrow" /></span>
+    </a>
+  );
+}
+
+function TasteBoard({ items, boardUrl, label }: { items: readonly TasteReference[]; boardUrl: string; label: string }) {
+  const featured = items.filter((item) => item.featured);
+  const remaining = items.filter((item) => !item.featured);
+  return (
+    <div className="taste-board">
+      <div className="taste-reference-grid">
+        {featured.map((item) => <TasteReferenceCard item={item} key={item.sourceUrl} />)}
+      </div>
+      <details className="taste-more">
+        <summary>View all {items.length} references <Icon name="arrow" /></summary>
+        <div className="taste-reference-grid taste-reference-grid-all">
+          {remaining.map((item) => <TasteReferenceCard item={item} key={item.sourceUrl} />)}
+        </div>
+      </details>
+      <a className="board-link" href={boardUrl} target="_blank" rel="noreferrer">Open the full {label} Pinterest board <Icon name="arrow" /></a>
+    </div>
   );
 }
 
@@ -341,15 +375,28 @@ function MotionCard({ item }: { item: MediaItem }) {
 
 function LogoChapter() {
   const chapter = chapterBySlug("logo");
+  const references = offbeat.media.guidelineReferences;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.1`} title="Primary identifier">
+        <SectionHeading index={`${chapter.number}.1`} title="Logo family">
           {offbeat.guidelines.logo.primary}
         </SectionHeading>
-        <div className="hero-art hero-art-pink">
-          <Image src="/offbeat/assets/cover-logo.svg" alt="OFF/BEAT primary logo" width={1100} height={420} priority unoptimized />
+        <div className="logo-family-grid">
+          <div className="logo-family-primary">
+            <span>Primary badge</span>
+            <Image src="/offbeat/assets/cover-logo.svg" alt="OFF/BEAT primary badge" width={1100} height={420} priority unoptimized />
+          </div>
+          <div className="logo-family-alternate">
+            <span>Alternate lockup</span>
+            <Image src="/offbeat/assets/logo-alternate-lockup.png" alt="Alternate OFF/BEAT bracketed lockup" width={4465} height={1271} unoptimized />
+          </div>
+        </div>
+        <div className="role-grid">
+          {offbeat.guidelines.logo.roles.map((role, index) => (
+            <div key={role.title}><span>{String(index + 1).padStart(2, "0")}</span><strong>{role.title}</strong><p>{role.note}</p></div>
+          ))}
         </div>
         <div className="rule-grid">
           {offbeat.guidelines.logo.sizing.map((rule) => (
@@ -370,56 +417,59 @@ function LogoChapter() {
         </div>
       </section>
 
-      <section className="content-section lilac-section">
-        <SectionHeading index={`${chapter.number}.2`} title="Construction">
-          {offbeat.guidelines.logo.construction}
-        </SectionHeading>
-        <div className="diagram-card">
-          <Image src="/offbeat/assets/logo-construction.svg" alt="Diagram showing construction of the OFF/BEAT logo" width={1100} height={560} unoptimized />
-        </div>
-      </section>
-
       <section className="content-section ink-section">
-        <SectionHeading index={`${chapter.number}.3`} title="Contrast and color">
+        <SectionHeading index={`${chapter.number}.2`} title="Colour and contrast">
           {offbeat.guidelines.logo.contrast}
         </SectionHeading>
-        <div className="logo-color-grid">
-          <div className="logo-field pink-field"><Image src="/offbeat/assets/logo-primary.svg" alt="Black logo on signal pink" width={680} height={230} unoptimized /></div>
-          <div className="logo-field lilac-field"><Image src="/offbeat/assets/logo-primary.svg" alt="Black logo on soft lilac" width={680} height={230} unoptimized /></div>
-          <div className="logo-field cream-field"><Image src="/offbeat/assets/logo-primary.svg" alt="Black logo on warm cream" width={680} height={230} unoptimized /></div>
-          <div className="logo-field black-field"><Image src="/offbeat/assets/logo-knockout.svg" alt="Knockout logo on black" width={680} height={230} unoptimized /></div>
+        <div className="logo-color-grid logo-color-grid-primary">
+          <div className="logo-field pink-field"><Image src="/offbeat/assets/logo-primary.svg" alt="Primary black logo on Signal Pink" width={680} height={230} unoptimized /><span>Signal Pink / black</span></div>
+          <div className="logo-field black-field"><Image src="/offbeat/assets/logo-knockout.svg" alt="Primary off-white logo on black" width={680} height={230} unoptimized /><span>Black / off-white</span></div>
+          <div className="logo-field cream-field"><Image src="/offbeat/assets/logo-primary.svg" alt="Primary black logo on warm off-white" width={680} height={230} unoptimized /><span>Off-white / black</span></div>
         </div>
+        <div className="secondary-logo-note"><strong>Secondary lockups</strong><p>Supporting versions may use the wider approved palette, provided the wordmark remains immediately legible.</p></div>
+        <EvidenceFigure item={references.multilingual} tone="dark" />
       </section>
 
       <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.4`} title="Clearspace">
-          {offbeat.guidelines.logo.clearspace}
+        <SectionHeading index={`${chapter.number}.3`} title="Placement">
+          {offbeat.guidelines.logo.placement}
         </SectionHeading>
-        <div className="diagram-card compact-diagram">
-          <Image src="/offbeat/assets/logo-clearspace.svg" alt="OFF/BEAT logo clearspace diagram" width={960} height={540} unoptimized />
+        <div className="placement-rules">
+          <div><span>Preferred</span><strong>Top-middle</strong><p>Use when the logo opens or signs a vertically led layout.</p></div>
+          <div><span>Preferred</span><strong>Centre axis</strong><p>Use when the logo is the signature or final read.</p></div>
+          <div className="placement-avoid"><span>Avoid</span><strong>Sides and corners</strong><p>The logo is not a navigation badge or corner stamp.</p></div>
+        </div>
+        <EvidenceFigure item={references.billboardLogo} />
+      </section>
+
+      <section className="content-section lilac-section">
+        <SectionHeading index={`${chapter.number}.4`} title="Stroked logo">
+          {offbeat.guidelines.logo.stroke}
+        </SectionHeading>
+        <div className="stroke-use-grid">
+          <div><span>Negative fill</span><strong>Background depth</strong><p>Use as pattern or atmosphere. It should not become the subject.</p></div>
+          <div><span>Filled + stroke</span><strong>Creative applications</strong><p>Use on objects, posters, lightboxes, keychains, and merchandise.</p></div>
+          <div><span>Formal communication</span><strong>Never</strong><p>Use the primary or alternate identifier instead.</p></div>
+        </div>
+        <EvidenceFigure item={references.strokedLogo} />
+      </section>
+
+      <section className="content-section cream-section">
+        <SectionHeading index={`${chapter.number}.5`} title="Construction and clearspace">
+          {offbeat.guidelines.logo.construction} {offbeat.guidelines.logo.clearspace}
+        </SectionHeading>
+        <div className="construction-pair">
+          <div className="diagram-card"><Image src="/offbeat/assets/logo-construction.svg" alt="Diagram showing construction of the OFF/BEAT logo" width={1100} height={560} unoptimized /></div>
+          <div className="diagram-card"><Image src="/offbeat/assets/logo-clearspace.svg" alt="OFF/BEAT logo clearspace diagram" width={960} height={540} unoptimized /></div>
         </div>
       </section>
 
       <section className="content-section asset-section">
-        <SectionHeading index={`${chapter.number}.5`} title="Approved logo files">
+        <SectionHeading index={`${chapter.number}.6`} title="Approved logo files">
           {offbeat.guidelines.logo.assets}
         </SectionHeading>
         <div className="asset-grid">
           {offbeat.assets.map((asset) => <AssetCard asset={asset} key={asset.name} />)}
-        </div>
-      </section>
-
-      <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.6`} title="Explorations">
-          Original production artwork stands in for the exploration deck, which stays in the studio archive.
-        </SectionHeading>
-        <div className="exploration-layout">
-          <ExplorationFigure item={offbeat.media.showcase.production[0]} lead />
-          <div className="exploration-side">
-            {offbeat.media.showcase.production.slice(1).map((item) => (
-              <ExplorationFigure item={item} key={item.src} />
-            ))}
-          </div>
         </div>
       </section>
 
@@ -433,7 +483,7 @@ function LogoChapter() {
       </section>
 
       <section className="content-section dont-section">
-        <SectionHeading index={`${chapter.number}.8`} title="Keep the beat">
+        <SectionHeading index={`${chapter.number}.8`} title="Keep recognition">
           {offbeat.guidelines.logo.consistency}
         </SectionHeading>
         <div className="dont-grid">
@@ -475,29 +525,43 @@ function PhotographyChapter() {
 
 function ApplicationChapter() {
   const chapter = chapterBySlug("application");
-  const applications = offbeat.media.showcase.applications;
+  const references = offbeat.media.guidelineReferences;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.1`} title="Merchandise and objects">
-          Approved applications photographed in use.
+        <SectionHeading index={`${chapter.number}.1`} title="Layout hierarchy">
+          Let context decide the hierarchy. The logo is a signature, not an automatic headline.
         </SectionHeading>
-        <div className="application-collage">
-          <div className="application-column">
-            {[applications[0], applications[3]].map((item) => <MediaCard item={item} key={item.src} />)}
-          </div>
-          <div className="application-column application-column-offset">
-            {[applications[1], applications[2]].map((item) => <MediaCard item={item} key={item.src} />)}
-          </div>
+        <div className="layout-hierarchy-grid">
+          <div><span>Announcement</span><strong>Type → colour → logo</strong><p>The idea leads. Add the logo only as a signature.</p></div>
+          <div><span>Owned social</span><strong>No logo by default</strong><p>The publishing handle already establishes authorship.</p></div>
+          <div><span>Collaboration or video</span><strong>Centred signature</strong><p>Use the logo for collaborations, purposeful overlays, and end slates.</p></div>
+        </div>
+        <div className="evidence-pair">
+          <EvidenceFigure item={references.businessGuide} />
+          <EvidenceFigure item={references.billboardType} />
         </div>
       </section>
-      <section className="content-section ink-section">
-        <SectionHeading index={`${chapter.number}.2`} title="Social formats">
-          One example per published format. The full library is in the archive below.
+
+      <section className="content-section lilac-section">
+        <SectionHeading index={`${chapter.number}.2`} title="Physical applications">
+          Let material, object, and environment do some of the branding work.
         </SectionHeading>
-        <div className="social-rail">
-          {offbeat.media.showcase.social.map((item) => <MediaCard item={item} key={item.src} />)}
+        <div className="evidence-pair">
+          <EvidenceFigure item={references.bandana} />
+          <EvidenceFigure item={references.keyAd} />
+        </div>
+      </section>
+
+      <section className="content-section ink-section">
+        <SectionHeading index={`${chapter.number}.3`} title="Published formats">
+          Use the system differently for apparel, collaboration, environmental, and owned-channel work.
+        </SectionHeading>
+        <div className="application-case-stack">
+          <EvidenceFigure item={references.onDuty} tone="dark" />
+          <EvidenceFigure item={references.billboardLogo} tone="dark" />
+          <EvidenceFigure item={references.environmentalPattern} tone="dark" />
         </div>
       </section>
     </>
@@ -652,6 +716,25 @@ function TypographyChapter() {
 
 function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
   const chapter = chapterBySlug("color");
+  const primaryNames = new Set(["Signal Pink", "Ink", "Warm Cream"]);
+  const primary = offbeat.palette.filter((color) => primaryNames.has(color.name));
+  const supporting = offbeat.palette.filter((color) => !primaryNames.has(color.name));
+  const references = offbeat.media.guidelineReferences;
+  const renderSwatches = (colors: typeof offbeat.palette) => colors.map((color, index) => (
+    <button
+      className="swatch"
+      type="button"
+      key={color.hex}
+      style={{ background: color.hex, color: color.text } as CSSProperties}
+      onClick={() => onCopy(color.hex)}
+      aria-label={`Copy ${color.name} ${color.hex}`}
+    >
+      <span>{String(index + 1).padStart(2, "0")}</span>
+      <span className="swatch-name">{color.name}</span>
+      <span>{color.hex} <Icon name="copy" /></span>
+      <small>{color.role}</small>
+    </button>
+  ));
   return (
     <>
       <ChapterDirectory chapter={chapter} />
@@ -659,47 +742,52 @@ function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
         <SectionHeading index={`${chapter.number}.1`} title="Palette">
           {offbeat.guidelines.color.palette}
         </SectionHeading>
-        <div className="swatch-grid">
-          {offbeat.palette.map((color, index) => (
-            <button
-              className="swatch"
-              type="button"
-              key={color.hex}
-              style={{ background: color.hex, color: color.text } as CSSProperties}
-              onClick={() => onCopy(color.hex)}
-              aria-label={`Copy ${color.name} ${color.hex}`}
-            >
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <span className="swatch-name">{color.name}</span>
-              <span>{color.hex} <Icon name="copy" /></span>
-              <small>{color.role}</small>
-            </button>
-          ))}
+        <div className="palette-group"><h3>Core</h3><div className="swatch-grid swatch-grid-core">{renderSwatches(primary)}</div></div>
+        <div className="palette-group"><h3>Supporting</h3><div className="swatch-grid swatch-grid-supporting">{renderSwatches(supporting)}</div></div>
+      </section>
+
+      <section className="content-section ink-section">
+        <SectionHeading index={`${chapter.number}.2`} title="Logo colours">
+          The primary identifier stays pink, black, or off-white. Secondary lockups may move through the supporting palette when contrast remains clear.
+        </SectionHeading>
+        <div className="logo-colour-matrix">
+          <div className="pink-field"><Image src="/offbeat/assets/logo-primary.svg" alt="Primary black logo on Signal Pink" width={680} height={230} unoptimized /><span>Primary · approved</span></div>
+          <div className="black-field"><Image src="/offbeat/assets/logo-knockout.svg" alt="Primary off-white logo on black" width={680} height={230} unoptimized /><span>Primary · approved</span></div>
+          <div className="cream-field"><Image src="/offbeat/assets/logo-primary.svg" alt="Primary black logo on off-white" width={680} height={230} unoptimized /><span>Primary · approved</span></div>
+        </div>
+      </section>
+
+      <section className="content-section cream-section">
+        <SectionHeading index={`${chapter.number}.3`} title="Two or three colours">
+          {offbeat.guidelines.color.proportion}
+        </SectionHeading>
+        <div className="colour-preferences">
+          <div><span>01</span><strong>One lead colour</strong><p>Give the composition one unmistakable field or material.</p></div>
+          <div><span>02</span><strong>One structural colour</strong><p>Use it for type, contrast, or the main image relationship.</p></div>
+          <div><span>03</span><strong>One signal, if needed</strong><p>A small third colour should make a deliberate point.</p></div>
+        </div>
+        <EvidenceFigure item={references.businessGuide} />
+      </section>
+
+      <section className="content-section lilac-section">
+        <SectionHeading index={`${chapter.number}.4`} title="Pink cadence">
+          {offbeat.guidelines.color.combinations}
+        </SectionHeading>
+        <p className="chapter-statement">{offbeat.guidelines.color.cadence}</p>
+        <div className="evidence-pair">
+          <EvidenceFigure item={references.pinkLighter} />
+          <EvidenceFigure item={references.bandana} />
         </div>
       </section>
 
       <section className="content-section ink-section">
-        <SectionHeading index={`${chapter.number}.2`} title="Proportion">
-          {offbeat.guidelines.color.proportion}
+        <SectionHeading index={`${chapter.number}.5`} title="Gradients">
+          {offbeat.guidelines.color.gradient}
         </SectionHeading>
-        <div className="color-proportion" aria-label="Recommended color proportion">
-          <div style={{ flex: 42, background: "#D1CDD2" }}><span>42%</span></div>
-          <div style={{ flex: 28, background: "#000000", color: "#fff" }}><span>28%</span></div>
-          <div style={{ flex: 18, background: "#FFEFE9" }}><span>18%</span></div>
-          <div style={{ flex: 12, background: "#FF00B4" }}><span>12%</span></div>
+        <div className="gradient-ratio" aria-label="Preferred gradient balance, 61.8 percent lead and 38.2 percent support">
+          <div><strong>61.8</strong><span>Lead colour</span></div><div><strong>38.2</strong><span>Support colour</span></div>
         </div>
-      </section>
-
-      <section className="content-section lilac-section">
-        <SectionHeading index={`${chapter.number}.3`} title="Combinations">
-          {offbeat.guidelines.color.combinations}
-        </SectionHeading>
-        <div className="combination-grid">
-          <div className="combo combo-pink"><span>HIGH</span><strong>ENERGY</strong></div>
-          <div className="combo combo-green"><span>GOOD</span><strong>SIGNAL</strong></div>
-          <div className="combo combo-rust"><span>WARM</span><strong>VOLUME</strong></div>
-          <div className="combo combo-cream"><span>CALM</span><strong>GROUND</strong></div>
-        </div>
+        <EvidenceFigure item={references.keyAd} tone="dark" />
       </section>
     </>
   );
@@ -707,80 +795,64 @@ function ColorChapter({ onCopy }: { onCopy: (value: string) => void }) {
 
 function SystemChapter() {
   const chapter = chapterBySlug("system");
-  const inspiration = offbeat.media.inspiration;
-  const collective = [inspiration[1], inspiration[2], inspiration[4]];
-  const repeat = inspiration[0];
-  const conceptVariants = [
-    { label: "One cut", cut: 0.191, steps: 1 },
-    { label: "Two cuts · the mark", cut: 0.191, steps: 2 },
-    { label: "Three cuts", cut: 0.309, steps: 3 },
-    { label: "Four cuts", cut: 0.309, steps: 4 },
-  ];
+  const references = offbeat.media.guidelineReferences;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.1`} title="Overview">
+        <SectionHeading index={`${chapter.number}.1`} title="Brand signals">
           {offbeat.guidelines.system.overview}
         </SectionHeading>
-        <div className="system-overview-shapes" aria-hidden="true">
-          {conceptVariants.map((variant) => (
-            <SilhouetteGlyph cut={variant.cut} steps={variant.steps} key={variant.label} />
-          ))}
+        <div className="brand-signal-grid">
+          <div><span>01</span><strong>Loud typography</strong><p>Lead with the idea and give it room.</p></div>
+          <div className="signal-pink"><span>02</span><strong>Signal Pink</strong><p>Use it as a punch, not an obligation.</p></div>
+          <div><span>03</span><strong>Slash</strong><p>Use it when it completes the language.</p></div>
+          <div><span>04</span><strong>Brackets</strong><p>Frame content, collaboration, or a reveal.</p></div>
+          <div><span>05</span><strong>Step cuts</strong><p>Use selectively at scales where they read.</p></div>
         </div>
       </section>
 
       <section className="content-section lilac-section">
-        <SectionHeading index={`${chapter.number}.2`} title="Concept">
+        <SectionHeading index={`${chapter.number}.2`} title="Containers">
           {offbeat.guidelines.system.concept}
         </SectionHeading>
-        <div className="system-concept">
-          {conceptVariants.map((variant) => (
-            <div className="system-concept-cell" key={variant.label}>
-              <SilhouetteGlyph cut={variant.cut} steps={variant.steps} />
-              <span>{variant.label}</span>
-              <small>φ {variant.cut.toFixed(3)}</small>
-            </div>
-          ))}
+        <div className="container-rules">
+          <div><span>Filled</span><strong>Creative subject</strong><p>Type plates, physical objects, posters, and large-format interventions.</p></div>
+          <div><span>Negative fill</span><strong>Depth and atmosphere</strong><p>Outlined frames sit behind the subject and create rhythm.</p></div>
+          <div><span>Stroke</span><strong>3px preferred</strong><p>Never below 2px on a 1080px canvas; scale proportionally.</p></div>
+        </div>
+        <EvidenceFigure item={references.patternMaster} />
+      </section>
+
+      <section className="content-section ink-section">
+        <SectionHeading index={`${chapter.number}.3`} title="Slash and brackets">
+          {offbeat.guidelines.system.repeat}
+        </SectionHeading>
+        <div className="device-language">
+          <div><span>/threads</span><span>/timezones</span><span>/language</span><span>/thinking</span></div>
+          <p>Use the slash as language. Use brackets to hold or reveal. Neither is filler.</p>
+        </div>
+        <div className="evidence-pair">
+          <EvidenceFigure item={references.pharmacy} tone="dark" />
+          <EvidenceFigure item={references.onDuty} tone="dark" />
         </div>
       </section>
 
       <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.3`} title="Collective">
-          {offbeat.guidelines.system.collective}
+        <SectionHeading index={`${chapter.number}.4`} title="Patterns">
+          {offbeat.guidelines.system.block}
         </SectionHeading>
-        <div className="system-collective">
-          {collective.map((item) => <SteppedFigure item={item} key={item.src} />)}
-        </div>
-        <p className="section-note">Reference imagery from the Inspiration chapter, held in generator silhouettes.</p>
-      </section>
-
-      <section className="content-section ink-section">
-        <SectionHeading index={`${chapter.number}.4`} title="Repeat">
-          {offbeat.guidelines.system.repeat}
-        </SectionHeading>
-        <div className="system-repeat">
-          {[0, 1, 2].map((index) => (
-            <div className="system-repeat-item" key={index} style={{ clipPath: steppedClipPath(repeat) }}>
-              <Image src={repeat.src} alt={index === 0 ? repeat.alt : ""} width={repeat.width ?? 1200} height={repeat.height ?? 1500} unoptimized />
-            </div>
-          ))}
+        <div className="pattern-reference-stack">
+          <EvidenceFigure item={references.outerWall} />
+          <EvidenceFigure item={references.multilingual} />
         </div>
       </section>
 
       <section className="content-section pink-section">
-        <SectionHeading index={`${chapter.number}.5`} title="Block">
-          {offbeat.guidelines.system.block}
+        <SectionHeading index={`${chapter.number}.5`} title="Pattern in use">
+          Use repetition for atmosphere and depth. Keep the logo on the centre axis when it appears.
         </SectionHeading>
-        <div className="shape-showcase">
-          <Image src="/offbeat/assets/shape-grid.svg" alt="Four warm-white stepped blocks around the words Custom patterns" width={1000} height={563} unoptimized />
-          <a className="shape-download" href="/offbeat/assets/shape-grid.svg" download>Download composition <Icon name="download" /></a>
-        </div>
-        <div className="system-principles">
-          {offbeat.guidelines.system.principles.map((principle) => (
-            <div key={principle.number}><span>{principle.number}</span><strong>{principle.title}</strong><p>{principle.note}</p></div>
-          ))}
-        </div>
+        <EvidenceFigure item={references.environmentalPattern} />
       </section>
 
       <section className="tool-section" id="shape-generator">
@@ -868,14 +940,15 @@ function HowToChapter() {
   );
 }
 
-function InspirationChapter() {
-  const chapter = chapterBySlug("inspiration");
+function TasteAlignmentChapter() {
+  const chapter = chapterBySlug("taste-alignment");
   const heritage = offbeat.media.heritage;
+  const taste = offbeat.media.tasteAlignment;
   return (
     <>
       <ChapterDirectory chapter={chapter} />
       <section className="content-section cream-section">
-        <SectionHeading index={`${chapter.number}.1`} title="The reference">
+        <SectionHeading index={`${chapter.number}.1`} title="Origins">
           {offbeat.guidelines.inspiration.reference}
         </SectionHeading>
         <div className="heritage-board">
@@ -884,23 +957,29 @@ function InspirationChapter() {
             {heritage.slice(1, 3).map((item) => <SteppedFigure item={item} masked={false} key={item.src} />)}
           </div>
           <div className="heritage-column heritage-column-offset">
-            {heritage.slice(3).map((item) => <SteppedFigure item={item} masked={false} key={item.src} />)}
+            {heritage.slice(3, 4).map((item) => <SteppedFigure item={item} masked={false} key={item.src} />)}
           </div>
         </div>
         <p className="section-note">
-          Owner-supplied research imagery plus one Wikimedia Commons photograph, credited per image. Reference only — not client work.
+          Heritage references establish the rhythm and geometry. They are a starting point, not a decorative style to repeat literally.
         </p>
       </section>
-      <section className="content-section lilac-section">
-        <SectionHeading index={`${chapter.number}.2`} title="Energy">
-          {offbeat.guidelines.inspiration.energy}
+
+      <section className="content-section pink-section taste-section taste-is">
+        <SectionHeading index={`${chapter.number}.2`} title="What is off/beat">
+          {offbeat.guidelines.inspiration.is}
         </SectionHeading>
-        <div className="inspiration-board">
-          {offbeat.media.inspiration.map((item) => <SteppedFigure item={item} key={item.src} />)}
-        </div>
-        <p className="section-note">
-          Open-source photography (Unsplash archive via Lorem Picsum), credited per image. Reference only — not client work.
-        </p>
+        <div className="taste-principles"><span>Unexpected</span><span>Culturally alert</span><span>Real-world pink</span><span>Wit + tension</span></div>
+        <TasteBoard items={taste.isOffbeat} boardUrl="https://in.pinterest.com/19s1750/what-is-offbeat/" label="What is OFF/BEAT" />
+        <div className="taste-owned-example"><EvidenceFigure item={offbeat.media.guidelineReferences.pinkLighter} /></div>
+      </section>
+
+      <section className="content-section cream-section taste-section taste-is-not">
+        <SectionHeading index={`${chapter.number}.3`} title="What is not off/beat">
+          {offbeat.guidelines.inspiration.isNot}
+        </SectionHeading>
+        <div className="taste-principles taste-principles-avoid"><span>Cute for its own sake</span><span>Decorative softness</span><span>Generic polish</span><span>Pink as a filter</span></div>
+        <TasteBoard items={taste.notOffbeat} boardUrl="https://in.pinterest.com/19s1750/what-is-not-offbeat/" label="What is not OFF/BEAT" />
       </section>
     </>
   );
@@ -940,6 +1019,17 @@ function Menu({ open, onClose }: { open: boolean; onClose: () => void }) {
 function BrandBook({ email, onLogout }: { email: string; onLogout: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    // The authenticated book mounts after the browser's initial hash pass.
+    // Resolve cold deep links once the chapter DOM exists.
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(decodeURIComponent(hash))?.scrollIntoView({ block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -1003,7 +1093,7 @@ function BrandBook({ email, onLogout }: { email: string; onLogout: () => void })
         <div className="contents-footer"><p>Questions, approvals, or missing files?</p><a href={`mailto:${offbeat.client.contact}`}>{offbeat.client.contact} <Icon name="arrow" /></a></div>
       </section>
 
-      <InspirationChapter />
+      <TasteAlignmentChapter />
       <LogoChapter />
       <TypographyChapter />
       <ColorChapter onCopy={copy} />
